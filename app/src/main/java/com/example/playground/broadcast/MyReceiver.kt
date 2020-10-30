@@ -1,6 +1,7 @@
 package com.example.playground.broadcast
 
 import android.app.PendingIntent
+import android.app.RemoteInput
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -46,11 +47,8 @@ class MyReceiver : BroadcastReceiver() {
                     toast("Time Changed - Try toggling airplane mode", context, Toast.LENGTH_LONG)
                 }
             }
-
-            Timber.d("Broadcast Receiver with intent: $intent \n and context: $context")
         }
     }
-
     private fun sendNotification(context: Context, title: String, body: String) {
         val builder = NotificationCompat.Builder(context, context.getString(R.string.channel_id))
             .setSmallIcon(R.drawable.ic_sleep_5)

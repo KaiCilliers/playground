@@ -2,6 +2,7 @@ package com.example.playground
 
 import android.app.PendingIntent
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
@@ -11,6 +12,8 @@ import android.view.View
 import android.widget.Button
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.RemoteInput
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.playground.broadcast.MyReceiver
@@ -24,6 +27,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
+    private val KEY_TEXT_REPLY = "key_text_reply"
+    private var notificationReplyIdUsedToUpdate: Int = 0
     private lateinit var binding: CustomToastBinding
     private val factory by lazy { SharedViewModelFactory() }
     private val viewModel by lazy {
@@ -40,6 +45,18 @@ class MainActivity : AppCompatActivity() {
         viewModel.name.observe(this, Observer {
             btn_custom_dialog_input.text = it
         })
+
+        val remoteInput = RemoteInput.getResultsFromIntent(intent)
+        remoteInput?.let {
+            val reply = "${remoteInput.getCharSequence(KEY_TEXT_REPLY)}"
+            btn_reply_notification.text = reply
+            val repliedNotification = NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
+                .setSmallIcon(R.drawable.ic_sleep_active)
+                .setContentText("Reply received: $reply")
+                .build()
+            val notificationMan = NotificationManagerCompat.from(baseContext)
+            notificationMan.notify(notificationReplyIdUsedToUpdate, repliedNotification)
+        }
     }
 
     private fun startMyService() = startService(
@@ -124,7 +141,39 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(br, filter)
     }
 
+    private fun sendReplyNotification(context: Context, title: String, body: String) {
+        val replyLabel = "Enter your reply here"
+        val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY).run {
+            setLabel(replyLabel)
+            build()
+        }
+        val resultIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val action = NotificationCompat.Action.Builder(
+            R.drawable.marshmallow,
+            "Reply",
+            pendingIntent)
+            .addRemoteInput(remoteInput)
+            .build()
+
+        notificationReplyIdUsedToUpdate = (0..999).random()
+
+        val newMessageNotification = NotificationCompat.Builder(context, context.getString(R.string.channel_id))
+            .setSmallIcon(R.drawable.ic_sleep_active)
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+            .setContentTitle(title)
+            .setContentText(body)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .addAction(action)
+        with(NotificationManagerCompat.from(context)) {
+            notify(notificationReplyIdUsedToUpdate, newMessageNotification.build())
+        }
+    }
+
     private fun setupClickListeners() {
+        btn_reply_notification.setOnClickListener {
+            sendReplyNotification(this, "asdada", "asdasd")
+        }
         btn_broadcast.setOnClickListener {
             broadcast()
             (it as Button).text = "Watch out for toasts each minute!"

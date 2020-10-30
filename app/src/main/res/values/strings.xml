@@ -22,4 +22,5 @@
     <string name="notification_destination_text_view_label">Notification Brought you here!</string>
     <string name="did_you_here_a_notification">Did you here a notification?</string>
     <string name="activate_broadcast_receiver">Activate Broadcast Receiver</string>
+    <string name="reply_notification_text">Reply Notification</string>
 </resources>
