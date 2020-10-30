@@ -15,7 +15,9 @@ import timber.log.Timber
 
 class MyReceiver : BroadcastReceiver() {
     /**
-     * Not working
+     * System can kill the process at any time
+     * without finishing the operation.
+     * Rather use a JobScheduler
      */
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
