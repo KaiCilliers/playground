@@ -13,4 +13,13 @@
     <string name="label_dialog_with_data">Dialog With Data</string>
     <string name="label_alert_dialog">Alert Dialog</string>
     <string name="btn_change_text_label">I can change text (0o0)/</string>
+    <string name="stop_a_service">Stop a service</string>
+    <string name="start_a_service">Start a service</string>
+    <string name="notification_content">"Goodness, you gave me a fright, but I am luckily OK! (no thanks to you :P)"</string>
+    <string name="channel_id">RogerWalters</string>
+    <string name="channel_name">Pink</string>
+    <string name="channel_description">band</string>
+    <string name="notification_destination_text_view_label">Notification Brought you here!</string>
+    <string name="did_you_here_a_notification">Did you here a notification?</string>
+    <string name="activate_broadcast_receiver">Activate Broadcast Receiver</string>
 </resources>

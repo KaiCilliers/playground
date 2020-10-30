@@ -1,4 +1,4 @@
-package com.example.playground
+package com.example.playground.toast
 
 import android.content.Context
 import android.view.Gravity

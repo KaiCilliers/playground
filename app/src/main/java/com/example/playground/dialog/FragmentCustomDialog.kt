@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.example.playground.CustomToast
 import com.example.playground.R
 import kotlinx.android.synthetic.main.fragment_dialog_simple.view.*
-import timber.log.Timber
 
 class FragmentCustomDialog : DialogFragment() {
     override fun onCreateView(
