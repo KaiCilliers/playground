@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Playground</string>
+    <string name="button_toast_text">Custom Toast</string>
+    <string name="snackbar">Snackbar</string>
+    <string name="label_logout">Log Out</string>
+    <string name="msg_logout">Do you want to logout from the app?</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_ok">Ok</string>
+    <string name="msg_enter_details">Please Enter your Details</string>
+    <string name="msg_hint_name">Enter Name</string>
+    <string name="label_submit">Submit</string>
+    <string name="label_simple_dialog">Simple Dialog</string>
+    <string name="label_dialog_with_data">Dialog With Data</string>
+    <string name="label_alert_dialog">Alert Dialog</string>
+    <string name="btn_change_text_label">I can change text (0o0)/</string>
 </resources>

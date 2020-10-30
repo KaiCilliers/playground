@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_8">8dp</dimen>
+    <dimen name="margin_8">8dp</dimen>
+    <dimen name="wrap_constraints">0dp</dimen>
+    <dimen name="title_24">24sp</dimen>
+    <dimen name="subtitle_16">16sp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="dimen_100">100dp</dimen>
+    <dimen name="dimen_48">48dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
+    <dimen name="font_size_24">24sp</dimen>
+    <dimen name="font_size_16">16sp</dimen>
 </resources>

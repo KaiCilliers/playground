@@ -6,13 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_custom_dialog_input"
+        android:layout_width="@dimen/wrap_constraints"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:layout_margin="@dimen/dimen_12"
+        android:text="@string/btn_change_text_label"
+        app:layout_constraintBottom_toTopOf="@id/btn_alert_dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_alert_dialog"
+        android:layout_width="@dimen/wrap_constraints"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_12"
+        android:text="@string/label_alert_dialog"
+        app:layout_constraintBottom_toTopOf="@id/btn_simple_dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_simple_dialog"
+        android:layout_width="@dimen/wrap_constraints"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_12"
+        android:text="@string/label_simple_dialog"
+        app:layout_constraintBottom_toTopOf="@id/btn_snackbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_snackbar"
+        android:layout_width="@dimen/wrap_constraints"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_12"
+        android:text="@string/snackbar"
+        app:layout_constraintBottom_toTopOf="@id/btn_custom_toast"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_custom_toast"
+        android:layout_width="@dimen/wrap_constraints"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_12"
+        android:text="@string/button_toast_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
