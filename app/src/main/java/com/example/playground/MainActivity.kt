@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             )
             .setAutoCancel(true)
         with(NotificationManagerCompat.from(this)) {
-            notify(123, builder.build())
+            notify((0..999).random(), builder.build())
         }
     }
 

@@ -58,7 +58,7 @@ class MyReceiver : BroadcastReceiver() {
             .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         with(NotificationManagerCompat.from(context)) {
-            notify(123, builder.build())
+            notify((1..999).random(), builder.build())
         }
     }
 }
