@@ -8,8 +8,8 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.view.View
 import android.widget.Button
-import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -23,13 +23,12 @@ import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.dialog.*
 import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
-import com.example.playground.util.snack
+import com.example.playground.ui.DummyActivity
 import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import java.lang.StringBuilder
-import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
     private val KEY_TEXT_REPLY = "key_text_reply"
@@ -39,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this, factory).get(SharedViewModel::class.java)
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,13 +47,13 @@ class MainActivity : AppCompatActivity() {
         setupClickListeners()
 
         viewModel.name.observe(this, Observer {
-            btn_custom_dialog_input.text = it
+//            btn_custom_dialog_input.text = it
         })
 
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
         remoteInput?.let {
             val reply = "${remoteInput.getCharSequence(KEY_TEXT_REPLY)}"
-            btn_reply_notification.text = reply
+//            btn_reply_notification.text = reply
             val repliedNotification =
                 NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
                     .setSmallIcon(R.drawable.ic_sleep_active)
@@ -241,44 +239,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        btn_content_provider.setOnClickListener {
-            requestAccess()
-        }
-        btn_reply_notification.setOnClickListener {
-            sendReplyNotification(this, "title", "body")
-        }
-        btn_broadcast.setOnClickListener {
-            broadcast()
-            (it as Button).text = "Watch out for toasts each minute!"
-            it.isEnabled = false
-        }
-        btn_notification.setOnClickListener {
-            sendNotifiation()
-        }
-        btn_service_start.setOnClickListener {
-            startMyService()
-        }
-        btn_service_stop.setOnClickListener {
-            stopMyService()
-        }
-        btn_custom_dialog_input.setOnClickListener {
-            FragmentDialogInput().show(supportFragmentManager, "TAG_CUSTOM")
-        }
-        btn_alert_dialog.setOnClickListener {
-            CustomStockAlertDialog().show(supportFragmentManager, "TAG_CUSTOM")
-        }
-
-        btn_simple_dialog.setOnClickListener {
-            FragmentCustomDialog().show(supportFragmentManager, "TAG_CUSTOM")
-        }
-
-        btn_custom_toast.setOnClickListener {
-            toastMsg("This is a custom toast")
-        }
-        btn_snackbar.setOnClickListener {
-            snackbar {
-                toastMsg("Custom Toast via Snack")
-            }.show()
-        }
+//        btn_content_provider.setOnClickListener {
+//            requestAccess()
+//        }
+//        btn_reply_notification.setOnClickListener {
+//            sendReplyNotification(this, "title", "body")
+//        }
+//        btn_broadcast.setOnClickListener {
+//            broadcast()
+//            (it as Button).text = "Watch out for toasts each minute!"
+//            it.isEnabled = false
+//        }
+//        btn_notification.setOnClickListener {
+//            sendNotifiation()
+//        }
+//        btn_service_start.setOnClickListener {
+//            startMyService()
+//        }
+//        btn_service_stop.setOnClickListener {
+//            stopMyService()
+//        }
+//        btn_custom_dialog_input.setOnClickListener {
+//            FragmentDialogInput().show(supportFragmentManager, "TAG_CUSTOM")
+//        }
+//        btn_alert_dialog.setOnClickListener {
+//            CustomStockAlertDialog().show(supportFragmentManager, "TAG_CUSTOM")
+//        }
+//
+//        btn_simple_dialog.setOnClickListener {
+//            FragmentCustomDialog().show(supportFragmentManager, "TAG_CUSTOM")
+//        }
+//
+//        btn_custom_toast.setOnClickListener {
+//            toastMsg("This is a custom toast")
+//        }
+//        btn_snackbar.setOnClickListener {
+//            snackbar {
+//                toastMsg("Custom Toast via Snack")
+//            }.show()
+//        }
     }
 }

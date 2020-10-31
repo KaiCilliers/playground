@@ -1,16 +1,12 @@
 package com.example.playground.broadcast
 
-import android.app.PendingIntent
-import android.app.RemoteInput
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.playground.DummyActivity
 import com.example.playground.R
-import com.example.playground.util.snack
 import com.example.playground.util.toast
 import timber.log.Timber
 

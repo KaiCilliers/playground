@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.playground.R
+import com.example.playground.util.clickAction
 import kotlinx.android.synthetic.main.fragment_dialog_input.view.*
-import kotlinx.android.synthetic.main.fragment_dialog_simple.view.*
 
 class FragmentDialogInput : DialogFragment() {
+    private val factory by lazy { SharedViewModelFactory() }
     private val viewModel by lazy {
-        ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        ViewModelProvider(requireActivity(), factory).get(SharedViewModel::class.java)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +43,7 @@ class FragmentDialogInput : DialogFragment() {
     }
 
     private fun setupClickListeners(view: View) {
-        view.btn_submit.setOnClickListener {
+        view.btn_submit.clickAction {
             viewModel.update("${view.et_name.text}")
             dismiss()
         }
