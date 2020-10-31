@@ -24,4 +24,6 @@
     <string name="activate_broadcast_receiver">Activate Broadcast Receiver</string>
     <string name="reply_notification_text">Reply Notification</string>
     <string name="content_provider_label">Fetch Contacts (Content Provider)</string>
+    <string name="notification_id_key">notification_id</string>
+    <string name="has_notification_id_key">has_notification_id</string>
 </resources>

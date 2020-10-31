@@ -13,3 +13,4 @@ fun toast(msg: String, context: Context, duration: Int) = Toast.makeText(context
 fun snack(msg: String, view: View) = Snackbar.make(view, msg, Snackbar.LENGTH_SHORT)
 inline fun View.clickAction(crossinline action: () -> Unit) = setOnClickListener { action() }
 inline fun <T> LiveData<T>.subscribe(owner: LifecycleOwner, crossinline action: (T) -> Unit) = observe(owner, Observer { action(it) })
+fun stringRes(context: Context, id: Int) = context.getString(id)

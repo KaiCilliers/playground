@@ -45,10 +45,18 @@ class FragmentHome : Fragment() {
             actions.apply {
                 btnContentProvider
                 btnReplyNotification
-                btnBroadcast
-                btnNotification
-                btnServiceStart
-                btnServiceStop
+                btnBroadcast.clickAction {
+
+                }
+                btnNotification.clickAction {
+                    sendNotification(requireContext())
+                }
+                btnServiceStart.clickAction {
+                    startService(requireContext())
+                }
+                btnServiceStop.clickAction {
+                    stopService(requireContext())
+                }
                 btnCustomDialogInput.clickAction {
                     showInputDialog("tag")
                 }
