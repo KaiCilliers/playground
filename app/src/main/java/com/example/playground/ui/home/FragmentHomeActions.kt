@@ -7,6 +7,8 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.view.View
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -129,5 +131,15 @@ class FragmentHomeAction(
         with(NotificationManagerCompat.from(context)) {
             notify(notificationId, notification.build())
         }
+    }
+    fun broadcast(context: Context) {
+        val filter = IntentFilter(ConnectivityManager.EXTRA_NO_CONNECTIVITY).apply {
+            // Some filters *have* to be specified at runtime (like time_tick)
+            addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_TIME_TICK)
+        }
+        context.registerReceiver(MyReceiver(), filter)
     }
 }

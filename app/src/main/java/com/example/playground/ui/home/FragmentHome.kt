@@ -4,17 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.databinding.FragmentHomeBinding
-import com.example.playground.dialog.*
+import com.example.playground.dialog.SharedViewModel
+import com.example.playground.dialog.SharedViewModelFactory
 import com.example.playground.util.clickAction
 import com.example.playground.util.subscribe
 import timber.log.Timber
+import java.lang.String
+import java.util.concurrent.TimeUnit
 
 class FragmentHome : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -46,7 +46,8 @@ class FragmentHome : Fragment() {
                 btnContentProvider
                 btnReplyNotification
                 btnBroadcast.clickAction {
-
+                    broadcast(requireContext())
+                    btnBroadcast.isEnabled = false
                 }
                 btnNotification.clickAction {
                     sendNotification(requireContext())

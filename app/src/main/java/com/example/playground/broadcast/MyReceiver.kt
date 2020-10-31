@@ -12,6 +12,10 @@ import com.example.playground.R
 import com.example.playground.util.stringRes
 import com.example.playground.util.toast
 import timber.log.Timber
+import java.lang.StringBuilder
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MyReceiver : BroadcastReceiver() {
     /**
@@ -29,9 +33,17 @@ class MyReceiver : BroadcastReceiver() {
                 }
             }
             when (intent?.action) {
+                Intent.ACTION_SCREEN_OFF -> {
+                    Timber.v("Screen is off")
+                    sendNotification(context, "Screen is off", "You switched the screen off")
+                }
+                Intent.ACTION_SCREEN_ON -> {
+                    sendNotification(context, "Screen is on", "You switched the screen on")
+                    Timber.v("Screen is on")
+                }
                 Intent.ACTION_AIRPLANE_MODE_CHANGED -> {
                     val toggledOn = intent.extras?.getBoolean("state", false)
-                    Timber.d(
+                    Timber.v(
                         "Extras: ${intent.extras}\n" +
                                 "Possible value: $toggledOn"
                     )
@@ -41,21 +53,25 @@ class MyReceiver : BroadcastReceiver() {
                             "Airplane mode is now ${if (toggledOn) "on" else "off"}"
                         )
                     }
-                    Timber.d("PLANES")
+                    Timber.v("PLANES")
                 }
                 Intent.ACTION_TIME_TICK -> {
-                    Timber.d("time changed...")
-                    toast("Time Changed - Try toggling airplane mode", context, Toast.LENGTH_LONG)
+                    val time = SimpleDateFormat("HH:mm:ss").format(Date())
+                    sendNotification(context, time, "A minute has passed")
+                    Timber.v("time changed... to $time")
+                    toast("Time is now $time - Try toggling airplane mode", context, Toast.LENGTH_LONG)
                 }
             }
         }
     }
+    // TODO heads up display notification
     private fun sendNotification(context: Context, title: String, body: String) {
         val builder = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
             .setSmallIcon(R.drawable.ic_sleep_5)
             .setContentTitle(title)
             .setContentText(body)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setDefaults(Notification.DEFAULT_ALL)
         with(NotificationManagerCompat.from(context)) {
             notify((1..Int.MAX_VALUE).random(), builder.build())
         }
