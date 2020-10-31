@@ -23,4 +23,5 @@
     <string name="did_you_here_a_notification">Did you here a notification?</string>
     <string name="activate_broadcast_receiver">Activate Broadcast Receiver</string>
     <string name="reply_notification_text">Reply Notification</string>
+    <string name="content_provider_label">Fetch Contacts (Content Provider)</string>
 </resources>

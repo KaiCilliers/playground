@@ -1,15 +1,17 @@
 package com.example.playground
 
 import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import android.provider.ContactsContract
 import android.widget.Button
+import android.widget.TimePicker
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
@@ -21,10 +23,13 @@ import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.dialog.*
 import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
+import com.example.playground.util.snack
+import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_dummy.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
+import java.lang.StringBuilder
+import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
     private val KEY_TEXT_REPLY = "key_text_reply"
@@ -34,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this, factory).get(SharedViewModel::class.java)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,12 +56,34 @@ class MainActivity : AppCompatActivity() {
         remoteInput?.let {
             val reply = "${remoteInput.getCharSequence(KEY_TEXT_REPLY)}"
             btn_reply_notification.text = reply
-            val repliedNotification = NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
-                .setSmallIcon(R.drawable.ic_sleep_active)
-                .setContentText("Reply received: $reply")
-                .build()
+            val repliedNotification =
+                NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
+                    .setSmallIcon(R.drawable.ic_sleep_active)
+                    .setContentText("Reply received: $reply")
+                    .build()
             val notificationMan = NotificationManagerCompat.from(baseContext)
             notificationMan.notify(notificationReplyIdUsedToUpdate, repliedNotification)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode) {
+            1 -> {
+                // If result is cancelled, the result arrays are empty
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    contentProvider()
+                    toast("Permission to read contacts granted", baseContext)
+                } else {
+                    // permission denied - Disable the functionality that depends on this permission
+                    toast("Permission to read contacts denied", baseContext)
+                }
+                return
+            }
         }
     }
 
@@ -148,31 +176,76 @@ class MainActivity : AppCompatActivity() {
             build()
         }
         val resultIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent =
+            PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val action = NotificationCompat.Action.Builder(
             R.drawable.marshmallow,
             "Reply",
-            pendingIntent)
+            pendingIntent
+        )
             .addRemoteInput(remoteInput)
             .build()
 
         notificationReplyIdUsedToUpdate = (0..999).random()
 
-        val newMessageNotification = NotificationCompat.Builder(context, context.getString(R.string.channel_id))
-            .setSmallIcon(R.drawable.ic_sleep_active)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-            .setContentTitle(title)
-            .setContentText(body)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .addAction(action)
+        val newMessageNotification =
+            NotificationCompat.Builder(context, context.getString(R.string.channel_id))
+                .setSmallIcon(R.drawable.ic_sleep_active)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(action)
         with(NotificationManagerCompat.from(context)) {
             notify(notificationReplyIdUsedToUpdate, newMessageNotification.build())
         }
     }
 
+    private fun requestAccess() {
+        // Request Read Contact permission
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.READ_CONTACTS),
+            1
+        )
+    }
+
+    private fun contentProvider() {
+
+        val columnNames = arrayOf(
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+            ContactsContract.Contacts.CONTACT_STATUS,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER
+        )
+
+        val contentResolver = contentResolver
+        val cursor = contentResolver.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            columnNames, null, null, null
+        )
+
+        cursor?.let {
+            if (cursor.count > 0) {
+                val result = StringBuilder()
+                while (cursor.moveToNext()) {
+                    result.apply {
+                        append(cursor.getString(0) + ", ")
+                        append(cursor.getString(1) + ", ")
+                        append(cursor.getString(2) + "\n")
+                    }
+                }
+
+                Timber.d("$result")
+            }
+        }
+    }
+
     private fun setupClickListeners() {
+        btn_content_provider.setOnClickListener {
+            requestAccess()
+        }
         btn_reply_notification.setOnClickListener {
-            sendReplyNotification(this, "asdada", "asdasd")
+            sendReplyNotification(this, "title", "body")
         }
         btn_broadcast.setOnClickListener {
             broadcast()
