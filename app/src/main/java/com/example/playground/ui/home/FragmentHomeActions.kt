@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentManager
 import com.example.playground.R
 import com.example.playground.broadcast.MyReceiver
 import com.example.playground.databinding.CustomToastBinding
-import com.example.playground.databinding.FragmentHomeBinding
 import com.example.playground.dialog.CustomStockAlertDialog
 import com.example.playground.dialog.FragmentCustomDialog
 import com.example.playground.dialog.FragmentDialogInput
@@ -25,9 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 class FragmentHomeAction(
-    val binding: FragmentHomeBinding,
-    val parent: View,
-    val fragManager: FragmentManager
+    private val parent: View,
+    private val fragManager: FragmentManager
 ) {
     fun snackbar(action: () -> Unit): Snackbar {
         val snack = Snackbar.make(

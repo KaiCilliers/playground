@@ -25,6 +25,8 @@ import com.example.playground.dialog.*
 import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
 import com.example.playground.ui.DummyActivity
+import com.example.playground.util.snack
+import com.example.playground.util.subscribe
 import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,6 +44,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = CustomToastBinding.inflate(layoutInflater)
+
+        viewModel.contacts.subscribe(this) {
+            snack("Loaded contacts", findViewById<View>(android.R.id.content))
+            Timber.d("Contacts: $it")
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -80,44 +87,13 @@ class MainActivity : AppCompatActivity() {
                 // If result is cancelled, the result arrays are empty
                 if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
-                    contentProvider()
+                    viewModel.fetchContacts(contentResolver)
                     toast("Permission to read contacts granted", baseContext)
                 } else {
                     // permission denied - Disable the functionality that depends on this permission
                     toast("Permission to read contacts denied", baseContext)
                 }
                 return
-            }
-        }
-    }
-    private fun contentProvider() {
-
-        val columnNames = arrayOf(
-            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-            ContactsContract.Contacts.CONTACT_STATUS,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER
-        )
-
-        val contentResolver = contentResolver
-        val cursor = contentResolver.query(
-            ContactsContract.Contacts.CONTENT_URI,
-            columnNames, null, null, null
-        )
-
-        var counter = 0
-        cursor?.let {
-            if (cursor.count > 0) {
-                val result = StringBuilder()
-                while (cursor.moveToNext()) {
-                    counter++
-                    result.apply {
-                        append(cursor.getString(0) + ", ")
-                        append(cursor.getString(1) + ", ")
-                        append(cursor.getString(2) + "\n")
-                    }
-                }
-                toast("Amount of contacts $counter", baseContext, Toast.LENGTH_LONG)
-                Timber.d("$result")
             }
         }
     }

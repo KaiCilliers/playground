@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 
 class FragmentHome : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private val actions by lazy { FragmentHomeAction(binding, parentView, parentFragmentManager) }
+    private val actions by lazy { FragmentHomeAction(parentView, parentFragmentManager) }
     private val parentView by lazy { requireActivity().findViewById<View>(android.R.id.content) }
     private lateinit var fragInflater: LayoutInflater
     private val factory by lazy { SharedViewModelFactory() }
