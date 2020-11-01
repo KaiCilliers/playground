@@ -43,8 +43,20 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
-                btnContentProvider
-                btnReplyNotification
+                btnContentProvider.clickAction {
+                    fetchPhoneContacts(
+                        requireContext(),
+                        requireActivity().contentResolver
+                    )
+                }
+                btnReplyNotification.clickAction {
+                    sendReplyNotification(
+                        requireContext(),
+                        "title",
+                        "body",
+                        requireActivity()
+                    )
+                }
                 btnBroadcast.clickAction {
                     broadcast(requireContext())
                     btnBroadcast.isEnabled = false

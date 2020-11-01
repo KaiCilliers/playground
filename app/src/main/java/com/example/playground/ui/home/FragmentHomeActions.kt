@@ -1,17 +1,14 @@
 package com.example.playground.ui.home
 
-import android.app.Activity
-import android.app.Notification
-import android.app.PendingIntent
-import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.*
+import android.content.*
 import android.net.ConnectivityManager
+import android.provider.ContactsContract
 import android.view.View
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.RemoteInput
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.example.playground.R
 import com.example.playground.broadcast.MyReceiver
@@ -25,8 +22,10 @@ import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
 import com.example.playground.ui.DummyActivity
 import com.example.playground.util.stringRes
+import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
+import java.lang.StringBuilder
 
 class FragmentHomeAction(
     val binding: FragmentHomeBinding,
@@ -141,5 +140,69 @@ class FragmentHomeAction(
             addAction(Intent.ACTION_TIME_TICK)
         }
         context.registerReceiver(MyReceiver(), filter)
+    }
+    fun sendReplyNotification(context: Context, title: String, body: String, dest: Activity) {
+        val KEY_TEXT_REPLY = "key_text_reply"
+        val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY).run {
+            setLabel("Enter your reply here")
+            build()
+        }
+        val notificationId = (0..Int.MAX_VALUE).random()
+        val resultIntent = Intent(context, dest::class.java).apply {
+            // This allows the object receiving the intent to check if it was started from
+            // a notification and then close that notifcation
+            putExtra(stringRes(context, R.string.has_notification_id_key), true)
+            putExtra(stringRes(context, R.string.notification_id_key), notificationId)
+            putExtra(stringRes(context, R.string.notification_key_reply), KEY_TEXT_REPLY)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val action = NotificationCompat.Action.Builder(
+            R.drawable.marshmallow,
+            "Reply here",
+            pendingIntent
+        ).addRemoteInput(remoteInput).build()
+
+        val notification = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
+            .setSmallIcon(R.drawable.ic_sleep_active)
+            .setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            .setContentTitle(title)
+            .setContentText(body)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .addAction(action)
+
+        with(NotificationManagerCompat.from(context)) {
+            notify(notificationId, notification.build())
+        }
+    }
+    fun fetchPhoneContacts(context: Context, contentResolver: ContentResolver) {
+        val columnNames = arrayOf(
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+            ContactsContract.Contacts.CONTACT_STATUS,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER
+        )
+
+        val contentResolver = contentResolver
+        val cursor = contentResolver.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            columnNames, null, null, null
+        )
+        var counter = 0
+        cursor?.let {
+            if (cursor.count > 0) {
+                val result = StringBuilder()
+                while (cursor.moveToNext()) {
+                    counter++
+                    result.apply {
+                        append(cursor.getString(0) + ", ")
+                        append(cursor.getString(1) + ", ")
+                        append(cursor.getString(2) + "\n")
+                    }
+                }
+                Timber.d("$result")
+                toast("Amount of contacts: $counter", context)
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -31,7 +32,6 @@ import timber.log.Timber
 import java.lang.StringBuilder
 
 class MainActivity : AppCompatActivity() {
-    private val KEY_TEXT_REPLY = "key_text_reply"
     private var notificationReplyIdUsedToUpdate: Int = 0
     private lateinit var binding: CustomToastBinding
     private val factory by lazy { SharedViewModelFactory() }
@@ -50,18 +50,27 @@ class MainActivity : AppCompatActivity() {
 //            btn_custom_dialog_input.text = it
         })
 
+        // Handle input from input Notification
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
         remoteInput?.let {
-            val reply = "${remoteInput.getCharSequence(KEY_TEXT_REPLY)}"
-//            btn_reply_notification.text = reply
+            val replyText = "${remoteInput.getCharSequence(getString(R.string.notification_key_reply))}"
             val repliedNotification =
                 NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
                     .setSmallIcon(R.drawable.ic_sleep_active)
-                    .setContentText("Reply received: $reply")
+                    .setContentText("Reply received: $replyText")
                     .build()
             val notificationMan = NotificationManagerCompat.from(baseContext)
             notificationMan.notify(notificationReplyIdUsedToUpdate, repliedNotification)
         }
+
+        // Cancel input notification
+        intent.extras?.let {
+            if(it.getBoolean(getString(R.string.has_notification_id_key), false)) {
+                val notificationId = it.getInt(getString(R.string.notification_id_key), -1)
+                NotificationManagerCompat.from(baseContext).cancel(notificationId)
+            }
+        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -169,10 +178,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendReplyNotification(context: Context, title: String, body: String) {
         val replyLabel = "Enter your reply here"
-        val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY).run {
+        val remoteInput = RemoteInput.Builder(getString(R.string.notification_key_reply)).run {
             setLabel(replyLabel)
             build()
         }
+        val s = MainActivity::class.java
         val resultIntent = Intent(this, MainActivity::class.java)
         val pendingIntent =
             PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
