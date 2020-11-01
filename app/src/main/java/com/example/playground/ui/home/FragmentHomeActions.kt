@@ -3,7 +3,6 @@ package com.example.playground.ui.home
 import android.app.*
 import android.content.*
 import android.net.ConnectivityManager
-import android.provider.ContactsContract
 import android.view.View
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,10 +21,8 @@ import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
 import com.example.playground.ui.DummyActivity
 import com.example.playground.util.stringRes
-import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
-import java.lang.StringBuilder
 
 class FragmentHomeAction(
     val binding: FragmentHomeBinding,
@@ -164,45 +161,17 @@ class FragmentHomeAction(
             pendingIntent
         ).addRemoteInput(remoteInput).build()
 
-        val notification = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
-            .setSmallIcon(R.drawable.ic_sleep_active)
-            .setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-            .setContentTitle(title)
-            .setContentText(body)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .addAction(action)
+        val notification =
+            NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
+                .setSmallIcon(R.drawable.ic_sleep_active)
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(action)
 
         with(NotificationManagerCompat.from(context)) {
             notify(notificationId, notification.build())
-        }
-    }
-    fun fetchPhoneContacts(context: Context, contentResolver: ContentResolver) {
-        val columnNames = arrayOf(
-            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-            ContactsContract.Contacts.CONTACT_STATUS,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER
-        )
-
-        val contentResolver = contentResolver
-        val cursor = contentResolver.query(
-            ContactsContract.Contacts.CONTENT_URI,
-            columnNames, null, null, null
-        )
-        var counter = 0
-        cursor?.let {
-            if (cursor.count > 0) {
-                val result = StringBuilder()
-                while (cursor.moveToNext()) {
-                    counter++
-                    result.apply {
-                        append(cursor.getString(0) + ", ")
-                        append(cursor.getString(1) + ", ")
-                        append(cursor.getString(2) + "\n")
-                    }
-                }
-                Timber.d("$result")
-                toast("Amount of contacts: $counter", context)
-            }
         }
     }
 }

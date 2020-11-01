@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.playground.databinding.CustomToastBinding
@@ -40,14 +41,22 @@ class FragmentHome : Fragment() {
         return binding.root
     }
 
+
+    // If permission granted MainActivity will fetch contacts
+    private fun requestAccess() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(android.Manifest.permission.READ_CONTACTS),
+            1
+        )
+    }
+
     private fun setupClicks() {
         binding.apply {
             actions.apply {
                 btnContentProvider.clickAction {
-                    fetchPhoneContacts(
-                        requireContext(),
-                        requireActivity().contentResolver
-                    )
+                    // If access is granted then MainActivity will fetch contacts
+                    requestAccess()
                 }
                 btnReplyNotification.clickAction {
                     sendReplyNotification(
