@@ -1,6 +1,9 @@
 package com.example.playground
 
 import android.app.PendingIntent
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -22,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.playground.broadcast.MyReceiver
 import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.dialog.*
+import com.example.playground.job.MyJobService
 import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
 import com.example.playground.ui.DummyActivity
@@ -34,6 +38,8 @@ import timber.log.Timber
 import java.lang.StringBuilder
 
 class MainActivity : AppCompatActivity() {
+    val jobScheduler by lazy { getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler }
+    val jobID by lazy { (0..Int.MAX_VALUE).random() }
     private var notificationReplyIdUsedToUpdate: Int = 0
     private lateinit var binding: CustomToastBinding
     private val factory by lazy { SharedViewModelFactory() }
@@ -53,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         handleAnyInputNotification()
+        startMyJob()
     }
 
     private fun handleAnyInputNotification() {
@@ -97,4 +104,46 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun startMyJob() {
+        val componentName = ComponentName(this, MyJobService::class.java)
+        val jobInfo = JobInfo.Builder(jobID, componentName)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            .setPeriodic(15*60*100) // minimum of 15 minutes
+            .setRequiresCharging(false)
+            .setPersisted(true)
+            .build()
+
+        // This does start with WiFi, just give it a few seconds to start up
+        when(jobScheduler.schedule(jobInfo)) {
+            JobScheduler.RESULT_SUCCESS -> {
+                Timber.d("Job scheduled successfully")
+            }
+            else -> {
+                Timber.d("Job could not be scheduled")
+            }
+        }
+    }
+    private fun stopMyJob() {
+        jobScheduler.cancel(jobID)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
