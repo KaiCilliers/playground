@@ -13,6 +13,7 @@ import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.playground.MainActivity
 import com.example.playground.R
 import com.example.playground.broadcast.MyReceiver
 import com.example.playground.databinding.CustomToastBinding
@@ -29,11 +30,16 @@ import com.example.playground.util.snack
 import com.example.playground.util.stringRes
 import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class FragmentHomeAction(
     private val parent: View,
-    private val fragManager: FragmentManager): SnackContent {
+    private val fragManager: FragmentManager
+) : SnackContent {
 
     /**
      * Using an anonymous object here just to showcase it
@@ -42,16 +48,24 @@ class FragmentHomeAction(
         object : BroadcastReceiver() {
             private lateinit var snackContent: SnackContent
             override fun onReceive(context: Context?, intent: Intent?) {
-                context?.let {context ->
-                    intent?.extras?.let {bundle ->
+                context?.let { context ->
+                    intent?.extras?.let { bundle ->
                         if (this::snackContent.isInitialized) {
-                            snackContent.show(bundle.getString(stringRes(context, R.string.intent_snack_key), "Default text"))
+                            snackContent.show(
+                                bundle.getString(
+                                    stringRes(
+                                        context,
+                                        R.string.intent_snack_key
+                                    ), "Default text"
+                                )
+                            )
                         } else {
                             Timber.e("SnackContent not initialized")
                         }
                     }
                 }
             }
+
             // Call to initialize SnackContent object
             fun registerInterfaceForSnackMessage(impl: SnackContent) {
                 snackContent = impl
@@ -63,9 +77,10 @@ class FragmentHomeAction(
 
     /**
      * TODO snackbar with action to dismiss, maybe change the color a bit to test that out
+     * TODO fok .show()!!
      */
     override fun show(message: String) {
-        snack(message, parent, Snackbar.LENGTH_INDEFINITE)
+        snackbar(message, "Dismiss") { Timber.v("Cancelled job service snackbar") }.show()
     }
 
     /**
@@ -95,13 +110,17 @@ class FragmentHomeAction(
         }
     }
 
-    fun snackbar(action: () -> Unit): Snackbar {
+    fun snackbar(
+        message: String = "I am staying here indefinitely",
+        actionName: String = "Show Toast"
+        , action: () -> Unit
+    ): Snackbar {
         val snack = Snackbar.make(
             parent,
-            "I am staying here indefinitely",
+            message,
             Snackbar.LENGTH_INDEFINITE
         )
-        snack.setAction("Show Toast") { action() }
+        snack.setAction(actionName) { action() }
         return snack
     }
 
@@ -148,10 +167,14 @@ class FragmentHomeAction(
         activity: Activity = DummyActivity(),
         receiver: BroadcastReceiver = MyReceiver()
     ) {
+        // It is your responsibility to save this value
+        // if you want to do anything with the notification
+        // like update or remove it
         val notificationId = (0..Int.MAX_VALUE).random()
 
         // Notification on click destination
         val dummyIntent = Intent(context, activity::class.java).apply {
+            // flags help preserve the user's expected navigation experience after they open your app via the notification
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         val pendingDummy = PendingIntent.getActivity(context, 0, dummyIntent, 0)
@@ -177,7 +200,7 @@ class FragmentHomeAction(
         ).setSmallIcon(R.drawable.cupcake)
             .setContentTitle("Cupcakes are ready!")
             .setContentText(stringRes(context, R.string.notification_content))
-            .setSubText("This is some sub text")
+            .setSubText("I timeout after 10 seconds")
             .setStyle(
                 NotificationCompat.BigTextStyle()
                     .bigText(stringRes(context, R.string.notification_content))
@@ -185,6 +208,7 @@ class FragmentHomeAction(
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setDefaults(Notification.DEFAULT_ALL)
             .setContentIntent(pendingDummy)
+            .setTimeoutAfter(10000)
             .addAction(R.drawable.ic_sleep_1, "Dismiss", dismissIntent)
             .addAction(R.drawable.ic_sleep_active, "Start Receiver", pendingAction)
             .setAutoCancel(true)
@@ -207,18 +231,21 @@ class FragmentHomeAction(
     }
 
     fun sendReplyNotification(context: Context, title: String, body: String, dest: Activity) {
-        val KEY_TEXT_REPLY = "key_text_reply"
-        val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY).run {
-            setLabel("Enter your reply here")
-            build()
-        }
+        val remoteInput =
+            RemoteInput.Builder(stringRes(context, R.string.notification_key_reply)).run {
+                setLabel("Enter your reply here")
+                build()
+            }
         val notificationId = (0..Int.MAX_VALUE).random()
         val resultIntent = Intent(context, dest::class.java).apply {
             // This allows the object receiving the intent to check if it was started from
             // a notification and then close that notifcation
             putExtra(stringRes(context, R.string.has_notification_id_key), true)
             putExtra(stringRes(context, R.string.notification_id_key), notificationId)
-            putExtra(stringRes(context, R.string.notification_key_reply), KEY_TEXT_REPLY)
+            putExtra(
+                stringRes(context, R.string.notification_key_reply),
+                stringRes(context, R.string.notification_key_reply)
+            )
         }
         val pendingIntent = PendingIntent.getActivity(
             context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
@@ -235,6 +262,7 @@ class FragmentHomeAction(
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
                 .setContentTitle(title)
                 .setContentText(body)
+                // TODO .setRemoteInputHistory("Remote input history?????")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .addAction(action)
 
@@ -272,5 +300,96 @@ class FragmentHomeAction(
 
     fun stopJobService() {
         jobScheduler.cancel(jobID)
+        snackbar("Job service has stopped running (explicitly)") { Timber.v("Explicitly cancelled job service") }
+    }
+
+    fun progressNotificaiton(context: Context) {
+        val builder = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id)).apply {
+            setContentTitle("Simulating Download")
+            setSubText("I love this subtext <3")
+            setContentText("Download in progress")
+            setSmallIcon(R.drawable.dice_4)
+            setOnlyAlertOnce(true)
+            priority = NotificationCompat.PRIORITY_LOW
+            // Provides system with a bit more knowledge on what
+            // this notification is about so that it can handle
+            // it appropriately
+            setCategory(NotificationCompat.CATEGORY_STATUS)
+            // Control level of detail visible in the notification
+            // from the lock screen
+            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        }
+
+        val id = (0..Int.MAX_VALUE).random()
+        // Values of the progress bar start and end value
+        val max = 100
+        var current = 0
+
+        NotificationManagerCompat.from(context).apply {
+            // Issue initial notification with zero progress
+            builder.setProgress(max, current, false)
+//            builder.setProgress(0,0,true)
+            notify(id, builder.build())
+
+            /**
+             * Work that tracks progress to be done off main thread
+             * Progress is shown by resetting the progress value
+             * and resending a notification with same id
+             *
+             * The indeterminate boolean value determines if a
+             * progress bar should show percentage complete
+             * or not.
+             *
+             * true - without percentage indicator
+             * false - with percentage indicator
+             */
+            CoroutineScope(Dispatchers.Default).launch {
+//                delay(4000)
+                while (current <= max) {
+                    // some delay
+                    delay(1500)
+                    // new progress bar value
+                    current += (0..30).random()
+                    // added logic to prevent progress to surpass max value
+                    builder.setProgress(
+                        max,
+                        when (current) {
+                            in (max + 1)..Int.MAX_VALUE -> max
+                            else -> current
+                        },
+                        false
+                    )
+                    notify(id, builder.build())
+                }
+
+                // When done, update the notification a last time to remove the progress bar
+                builder.setContentText("Donwload complete")
+                    // This call removes the progress bar
+                    .setProgress(0, 0, false)
+                notify(id, builder.build())
+            }
+        }
+
+    }
+
+    /**
+     * NOTE - requires manifest permission if API 29+
+     */
+    fun bigTimeSensitiveFullscreenNotification(context: Context) {
+        val fullScreenIntent = Intent(context, DummyActivity::class.java)
+        val fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
+            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
+            .setSmallIcon(R.drawable.ic_sleep_3)
+            .setContentTitle("Incoming call!")
+            .setContentText("Click me to go to the call screen!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
+
+        NotificationManagerCompat.from(context).apply {
+            notify((99..9999).random(), builder.build())
+        }
+
     }
 }

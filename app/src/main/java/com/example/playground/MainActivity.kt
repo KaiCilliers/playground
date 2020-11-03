@@ -47,6 +47,19 @@ class MainActivity : AppCompatActivity() {
         handleAnyInputNotification()
     }
 
+    /**
+     * A notification supports a reply feature where
+     * it can send a reply in the notification after
+     * typing and hitting send.
+     *
+     * The send button fires an intent to launch
+     * [MainActivity], thus this method is called at
+     * onCreate.
+     *
+     * This method captures and handles the message
+     * received via the notification and it handles
+     * what to do with the notification further
+     */
     private fun handleAnyInputNotification() {
         // Handle input from input Notification
         val remoteInput = RemoteInput.getResultsFromIntent(intent)

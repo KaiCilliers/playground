@@ -25,9 +25,11 @@ class MyJobService : JobService() {
     override fun onStopJob(params: JobParameters?): Boolean {
         Timber.d("onStopJob called")
         flag = false
+
         val intent = Intent(getString(R.string.intent_filter_service_action_key))
         intent.putExtra(getString(R.string.intent_snack_key), "Job service has stopped running")
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+
         return true
     }
 

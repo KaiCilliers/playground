@@ -79,6 +79,12 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnFullscreenNotification.clickAction {
+                    bigTimeSensitiveFullscreenNotification(requireContext())
+                }
+                btnProgressNotification.clickAction {
+                    progressNotificaiton(requireContext())
+                }
                 btnStartJobService.clickAction {
                     val s = requireActivity() as Activity
                     if (startJobService(s)) {
@@ -135,7 +141,6 @@ class FragmentHome : Fragment() {
                     )
                 }
                 btnSnackbar.clickAction {
-                    Timber.d("adadasdasd")
                     snackbar {
                         toastMsg(
                             "Custom toast via snackbar click",

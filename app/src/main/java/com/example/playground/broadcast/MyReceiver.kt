@@ -66,12 +66,21 @@ class MyReceiver : BroadcastReceiver() {
     }
     // TODO heads up display notification
     private fun sendNotification(context: Context, title: String, body: String) {
+        val privateNotification = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
+            .setSmallIcon(R.drawable.ic_sleep_3)
+            .setContentTitle("Shhhh!")
+            .setContentText("You have a secret message")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setDefaults(Notification.DEFAULT_ALL)
         val builder = NotificationCompat.Builder(context, stringRes(context, R.string.channel_id))
             .setSmallIcon(R.drawable.ic_sleep_5)
             .setContentTitle(title)
             .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setDefaults(Notification.DEFAULT_ALL)
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+            .setPublicVersion(privateNotification.build())
+            .setTimeoutAfter(4000)
         with(NotificationManagerCompat.from(context)) {
             notify((1..Int.MAX_VALUE).random(), builder.build())
         }
