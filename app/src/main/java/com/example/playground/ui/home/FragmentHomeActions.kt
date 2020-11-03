@@ -1,7 +1,10 @@
 package com.example.playground.ui.home
 
 import android.app.*
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
 import android.content.*
+import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.view.View
 import androidx.core.app.NotificationCompat
@@ -9,24 +12,86 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.playground.R
 import com.example.playground.broadcast.MyReceiver
 import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.dialog.CustomStockAlertDialog
 import com.example.playground.dialog.FragmentCustomDialog
 import com.example.playground.dialog.FragmentDialogInput
+import com.example.playground.job.MyJobService
+import com.example.playground.job.SnackContent
 import com.example.playground.notification.NotificationDismissActivity
 import com.example.playground.service.MyService
 import com.example.playground.toast.CustomToast
 import com.example.playground.ui.DummyActivity
+import com.example.playground.util.snack
 import com.example.playground.util.stringRes
+import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 class FragmentHomeAction(
     private val parent: View,
-    private val fragManager: FragmentManager
-) {
+    private val fragManager: FragmentManager): SnackContent {
+
+    /**
+     * Using an anonymous object here just to showcase it
+     */
+    private val serviceSnackReceiver by lazy {
+        object : BroadcastReceiver() {
+            private lateinit var snackContent: SnackContent
+            override fun onReceive(context: Context?, intent: Intent?) {
+                context?.let {context ->
+                    intent?.extras?.let {bundle ->
+                        if (this::snackContent.isInitialized) {
+                            // Call to display snackbar to indicate that
+                            snackContent.show(bundle.getString(stringRes(context, R.string.intent_snack_key), ""))
+                        } else {
+                            Timber.e("SnackContent not initialized")
+                        }
+                    }
+                }
+            }
+            // Call to initialize SnackContent object
+            fun registerInterfaceForSnackMessage(impl: SnackContent) {
+                snackContent = impl
+            }
+        }
+    }
+    private lateinit var jobScheduler: JobScheduler
+    private val jobID by lazy { (0..Int.MAX_VALUE).random() }
+
+    override fun show(message: String) {
+        snack(message, parent, Snackbar.LENGTH_INDEFINITE)
+    }
+
+    /**
+     * Register receiver to be alerted when
+     * my [MyJobService] has initiated its work
+     */
+    fun registerReceiver(context: Context) {
+        val intentFilter = IntentFilter().apply {
+            // filter not utilised just yet
+            addAction(stringRes(context, R.string.intent_filter_service_action_key))
+        }
+        LocalBroadcastManager.getInstance(context).registerReceiver(
+            serviceSnackReceiver, intentFilter
+        )
+        serviceSnackReceiver.registerInterfaceForSnackMessage(this)
+    }
+
+    /**
+     * Unregister the receiver to free up resources I guess
+     */
+    fun unregisterReceiver(context: Context) {
+        try {
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(serviceSnackReceiver)
+        } catch (ex: Exception) {
+            Timber.e("Error unregistering ServiceReceiver\n$ex")
+        }
+    }
+
     fun snackbar(action: () -> Unit): Snackbar {
         val snack = Snackbar.make(
             parent,
@@ -126,6 +191,7 @@ class FragmentHomeAction(
             notify(notificationId, notification.build())
         }
     }
+
     fun broadcast(context: Context) {
         val filter = IntentFilter(ConnectivityManager.EXTRA_NO_CONNECTIVITY).apply {
             // Some filters *have* to be specified at runtime (like time_tick)
@@ -136,6 +202,7 @@ class FragmentHomeAction(
         }
         context.registerReceiver(MyReceiver(), filter)
     }
+
     fun sendReplyNotification(context: Context, title: String, body: String, dest: Activity) {
         val KEY_TEXT_REPLY = "key_text_reply"
         val remoteInput = RemoteInput.Builder(KEY_TEXT_REPLY).run {
@@ -171,5 +238,36 @@ class FragmentHomeAction(
         with(NotificationManagerCompat.from(context)) {
             notify(notificationId, notification.build())
         }
+    }
+
+    /**
+     * @return true if started successfully to enable stop button
+     */
+    fun startJobService(activity: Activity): Boolean {
+        Timber.d("init")
+        jobScheduler = activity.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val componentName = ComponentName(activity.baseContext, MyJobService::class.java)
+        val jobInfo = JobInfo.Builder(jobID, componentName)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            .setPeriodic(15 * 60 * 100) // minimum of 15 minutes
+            .setRequiresCharging(false)
+            .setPersisted(true)
+            .build()
+
+        // This does start with WiFi, just give it a few seconds to start up
+        return when (jobScheduler.schedule(jobInfo)) {
+            JobScheduler.RESULT_SUCCESS -> {
+                Timber.d("Job scheduled successfully")
+                true
+            }
+            else -> {
+                Timber.d("Job could not be scheduled")
+                false
+            }
+        }
+    }
+
+    fun stopJobService() {
+        jobScheduler.cancel(jobID)
     }
 }

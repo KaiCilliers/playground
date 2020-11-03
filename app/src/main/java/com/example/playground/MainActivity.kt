@@ -1,45 +1,31 @@
 package com.example.playground
 
-import android.app.PendingIntent
-import android.app.job.JobInfo
 import android.app.job.JobScheduler
-import android.content.ComponentName
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.playground.broadcast.MyReceiver
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.playground.databinding.CustomToastBinding
-import com.example.playground.dialog.*
-import com.example.playground.job.MyJobService
-import com.example.playground.service.MyService
-import com.example.playground.toast.CustomToast
-import com.example.playground.ui.DummyActivity
+import com.example.playground.dialog.SharedViewModel
+import com.example.playground.dialog.SharedViewModelFactory
 import com.example.playground.util.snack
 import com.example.playground.util.subscribe
 import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
-import java.lang.StringBuilder
 
 class MainActivity : AppCompatActivity() {
-    val jobScheduler by lazy { getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler }
-    val jobID by lazy { (0..Int.MAX_VALUE).random() }
+    private val jobScheduler: JobScheduler by lazy { getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler }
     private var notificationReplyIdUsedToUpdate: Int = 0
     private lateinit var binding: CustomToastBinding
     private val factory by lazy { SharedViewModelFactory() }
@@ -59,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         handleAnyInputNotification()
-        startMyJob()
     }
 
     private fun handleAnyInputNotification() {
@@ -104,46 +89,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    private fun startMyJob() {
-        val componentName = ComponentName(this, MyJobService::class.java)
-        val jobInfo = JobInfo.Builder(jobID, componentName)
-            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-            .setPeriodic(15*60*100) // minimum of 15 minutes
-            .setRequiresCharging(false)
-            .setPersisted(true)
-            .build()
-
-        // This does start with WiFi, just give it a few seconds to start up
-        when(jobScheduler.schedule(jobInfo)) {
-            JobScheduler.RESULT_SUCCESS -> {
-                Timber.d("Job scheduled successfully")
-            }
-            else -> {
-                Timber.d("Job could not be scheduled")
-            }
-        }
-    }
-    private fun stopMyJob() {
-        jobScheduler.cancel(jobID)
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

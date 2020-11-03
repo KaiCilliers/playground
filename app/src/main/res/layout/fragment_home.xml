@@ -16,6 +16,27 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/btn_start_job_service"
+                    android:layout_width="@dimen/wrap_constraints"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_12"
+                    android:text="@string/start_job_service"
+                    app:layout_constraintBottom_toTopOf="@id/btn_stop_job_service"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/btn_stop_job_service"
+                    android:layout_width="@dimen/wrap_constraints"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_12"
+                    android:text="@string/stop_job_service"
+                    android:enabled="false"
+                    app:layout_constraintBottom_toTopOf="@id/btn_content_provider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
                     android:id="@+id/btn_content_provider"
                     android:layout_width="@dimen/wrap_constraints"
                     android:layout_height="wrap_content"
