@@ -20,10 +20,14 @@ class MyJobService : JobService() {
     /**
      * @return true means restart if killed
      * @return false means do not restart if killed
+     * TODO call a snackbar to indicate the service has stopped
      */
     override fun onStopJob(params: JobParameters?): Boolean {
         Timber.d("onStopJob called")
         flag = false
+        val intent = Intent(getString(R.string.intent_filter_service_action_key))
+        intent.putExtra(getString(R.string.intent_snack_key), "Job service has stopped running")
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         return true
     }
 
@@ -36,7 +40,7 @@ class MyJobService : JobService() {
         flag = true
         doBackgroundWork()
 
-        val intent = Intent(getString(R.string.intent_filter_service_action_key))  // is this the winner?
+        val intent = Intent(getString(R.string.intent_filter_service_action_key))
         intent.putExtra(getString(R.string.intent_snack_key), "Job service has started running")
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 

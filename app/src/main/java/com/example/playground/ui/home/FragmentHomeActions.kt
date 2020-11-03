@@ -42,16 +42,10 @@ class FragmentHomeAction(
         object : BroadcastReceiver() {
             private lateinit var snackContent: SnackContent
             override fun onReceive(context: Context?, intent: Intent?) {
-                Timber.d("received braodcast")
                 context?.let {context ->
-                    Timber.d("context")
                     intent?.extras?.let {bundle ->
-                        Timber.d("bundle anc check init")
                         if (this::snackContent.isInitialized) {
-                            Timber.d("is inint")
-                            Timber.d(bundle.getString(stringRes(context, R.string.intent_snack_key), "nada"))
-                            // Call to display snackbar to indicate that
-                            snackContent.show(bundle.getString(stringRes(context, R.string.intent_snack_key), ""))
+                            snackContent.show(bundle.getString(stringRes(context, R.string.intent_snack_key), "Default text"))
                         } else {
                             Timber.e("SnackContent not initialized")
                         }
@@ -71,7 +65,6 @@ class FragmentHomeAction(
      * TODO snackbar with action to dismiss, maybe change the color a bit to test that out
      */
     override fun show(message: String) {
-        Timber.d("show snack")
         snack(message, parent, Snackbar.LENGTH_INDEFINITE)
     }
 
@@ -80,7 +73,6 @@ class FragmentHomeAction(
      * my [MyJobService] has initiated its work
      */
     fun registerReceiver(context: Context) {
-        Timber.d("registered")
         val intentFilter = IntentFilter().apply {
             // filter not utilised just yet - wait a bit :)
             addAction(stringRes(context, R.string.intent_filter_service_action_key))
