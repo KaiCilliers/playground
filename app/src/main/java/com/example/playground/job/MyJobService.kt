@@ -36,8 +36,8 @@ class MyJobService : JobService() {
         flag = true
         doBackgroundWork()
 
-        val intent = Intent(getString(R.string.intent_snack_key))
-        intent.putExtra(getString(R.string.snack_content_key), "Job service has started running")
+        val intent = Intent(getString(R.string.intent_filter_service_action_key))  // is this the winner?
+        intent.putExtra(getString(R.string.intent_snack_key), "Job service has started running")
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
 
         return true
@@ -57,6 +57,7 @@ class MyJobService : JobService() {
                     if (counter % 10 == 0) {
                         // Toast can not be displayed when called outside main thread
                        launch(Dispatchers.Main) {
+                           // TODO toasting throws weird log message each time
                            toast("Random value: $randomInt", baseContext)
                        }
                     }

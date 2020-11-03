@@ -42,9 +42,14 @@ class FragmentHomeAction(
         object : BroadcastReceiver() {
             private lateinit var snackContent: SnackContent
             override fun onReceive(context: Context?, intent: Intent?) {
+                Timber.d("received braodcast")
                 context?.let {context ->
+                    Timber.d("context")
                     intent?.extras?.let {bundle ->
+                        Timber.d("bundle anc check init")
                         if (this::snackContent.isInitialized) {
+                            Timber.d("is inint")
+                            Timber.d(bundle.getString(stringRes(context, R.string.intent_snack_key), "nada"))
                             // Call to display snackbar to indicate that
                             snackContent.show(bundle.getString(stringRes(context, R.string.intent_snack_key), ""))
                         } else {
@@ -62,7 +67,11 @@ class FragmentHomeAction(
     private lateinit var jobScheduler: JobScheduler
     private val jobID by lazy { (0..Int.MAX_VALUE).random() }
 
+    /**
+     * TODO snackbar with action to dismiss, maybe change the color a bit to test that out
+     */
     override fun show(message: String) {
+        Timber.d("show snack")
         snack(message, parent, Snackbar.LENGTH_INDEFINITE)
     }
 
@@ -71,8 +80,9 @@ class FragmentHomeAction(
      * my [MyJobService] has initiated its work
      */
     fun registerReceiver(context: Context) {
+        Timber.d("registered")
         val intentFilter = IntentFilter().apply {
-            // filter not utilised just yet
+            // filter not utilised just yet - wait a bit :)
             addAction(stringRes(context, R.string.intent_filter_service_action_key))
         }
         LocalBroadcastManager.getInstance(context).registerReceiver(
@@ -86,6 +96,7 @@ class FragmentHomeAction(
      */
     fun unregisterReceiver(context: Context) {
         try {
+            Timber.d("unregistered")
             LocalBroadcastManager.getInstance(context).unregisterReceiver(serviceSnackReceiver)
         } catch (ex: Exception) {
             Timber.e("Error unregistering ServiceReceiver\n$ex")

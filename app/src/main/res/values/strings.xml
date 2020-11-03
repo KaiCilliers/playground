@@ -31,5 +31,4 @@
     <string name="stop_job_service">Stop Job Service</string>
     <string name="intent_snack_key">snack_message_key</string>
     <string name="intent_filter_service_action_key">SERVICE_STARTED_ACTION</string>
-    <string name="snack_content_key">snack_content</string>
 </resources>
