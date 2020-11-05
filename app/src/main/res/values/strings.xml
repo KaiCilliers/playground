@@ -34,4 +34,5 @@
     <string name="progress_notification">Show Progress Notification</string>
     <string name="fullscreen_notification">Fullscreen notification (like for a incoming call)</string>
     <string name="message_style_notification">Message style notification</string>
+    <string name="data_store_update_value">Update a DataStore Value</string>
 </resources>

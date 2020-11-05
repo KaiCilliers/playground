@@ -14,12 +14,18 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.edit
+import androidx.datastore.preferences.preferencesKey
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.playground.MainActivity
 import com.example.playground.R
 import com.example.playground.broadcast.MyReceiver
 import com.example.playground.databinding.CustomToastBinding
+import com.example.playground.datastore.ExampleMusicPreferences
 import com.example.playground.dialog.CustomStockAlertDialog
 import com.example.playground.dialog.FragmentCustomDialog
 import com.example.playground.dialog.FragmentDialogInput
@@ -31,11 +37,13 @@ import com.example.playground.toast.CustomToast
 import com.example.playground.ui.DummyActivity
 import com.example.playground.util.snack
 import com.example.playground.util.stringRes
+import com.example.playground.util.subscribe
 import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -442,6 +450,39 @@ val notificationId = (444..9999).random()
         NotificationManagerCompat.from(context).apply {
             notify(notificationId, notification)
         }
+    }
+
+    suspend fun preferencesDatasore(context: Context, owner: LifecycleOwner) {
+        val example_counter = preferencesKey<Int>("example_counter")
+        val datastore = context.createDataStore(
+            name = "settings"
+        )
+        // Read from preferences datastore
+        val exampleCounterFlow = datastore.data.map {preferences ->
+            preferences[example_counter] ?: 0
+        }
+
+        // write to preferences datastore
+        // requires to be off mian thread
+        datastore.edit { settings ->
+            val currentCounterValue = settings[example_counter] ?: 0
+            settings[example_counter] = currentCounterValue + 1
+        }
+
+    }
+
+    suspend fun changeSharedPreferenceDataStoreValue(id: Int, musicPreferences: ExampleMusicPreferences) {
+        musicPreferences.saveLastPlayedSong(id)
+        Timber.d("Saved new music preference with ID: $id")
+    }
+
+    /**
+     * Proto DataStore implementation uses DataStore and
+     * protocol buffers to persist typed objects to disk
+     */
+    suspend fun protoDatastore(context: Context) {
+        // Define a schema
+
     }
 
 }

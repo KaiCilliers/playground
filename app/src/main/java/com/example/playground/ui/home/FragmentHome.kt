@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.databinding.FragmentHomeBinding
+import com.example.playground.datastore.ExampleMusicPreferences
 import com.example.playground.dialog.SharedViewModel
 import com.example.playground.dialog.SharedViewModelFactory
 import com.example.playground.job.SnackContent
@@ -23,6 +25,9 @@ import com.example.playground.util.snack
 import com.example.playground.util.subscribe
 import com.example.playground.util.toast
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class FragmentHome : Fragment() {
@@ -32,6 +37,8 @@ class FragmentHome : Fragment() {
     private lateinit var fragInflater: LayoutInflater
     private val factory by lazy { SharedViewModelFactory() }
     private val sharedViewModel by lazy { ViewModelProvider(requireActivity(), factory).get(SharedViewModel::class.java) }
+    private val musicPreferences by lazy { ExampleMusicPreferences(requireContext()) }
+    private val homeScopeIO by lazy { CoroutineScope(Dispatchers.IO) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +51,10 @@ class FragmentHome : Fragment() {
 
         sharedViewModel.name.subscribe(viewLifecycleOwner) {
             binding.btnCustomDialogInput.text = it
+        }
+        musicPreferences.lastPlayedSong.asLiveData().subscribe(viewLifecycleOwner) {
+            Timber.d("LastPlayedSong value: $it")
+            toast("Updated value to $it", requireContext())
         }
 
         setupClicks()
@@ -79,6 +90,11 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnDataStoreUpdate.clickAction {
+                    homeScopeIO.launch {
+                        changeSharedPreferenceDataStoreValue((99..8888).random(), musicPreferences)
+                    }
+                }
                 btnMessageStyleNotification.clickAction {
                     messagingStyleNotification(requireContext())
                 }
