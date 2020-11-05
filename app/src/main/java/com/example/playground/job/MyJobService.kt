@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class MyJobService : JobService() {
     private val jobScope by lazy { CoroutineScope(Dispatchers.Default) }
-    private var flag: Boolean = false
+
     /**
      * @return true means restart if killed
      * @return false means do not restart if killed
@@ -24,7 +24,6 @@ class MyJobService : JobService() {
      */
     override fun onStopJob(params: JobParameters?): Boolean {
         Timber.d("onStopJob called")
-        flag = false
 
         val intent = Intent(getString(R.string.intent_filter_service_action_key))
         intent.putExtra(getString(R.string.intent_snack_key), "Job service has stopped running")
@@ -39,8 +38,7 @@ class MyJobService : JobService() {
      */
     override fun onStartJob(params: JobParameters?): Boolean {
         Timber.d("onStartJob called and it should restart the service")
-        flag = true
-        doBackgroundWork()
+        doBackgroundWork(params)
 
         val intent = Intent(getString(R.string.intent_filter_service_action_key))
         intent.putExtra(getString(R.string.intent_snack_key), "Job service has started running")
@@ -49,26 +47,20 @@ class MyJobService : JobService() {
         return true
     }
 
-    private fun doBackgroundWork() {
+    // Changed to run and finish and be rescheduled
+    private fun doBackgroundWork(params: JobParameters?) {
         var counter = 0
         var randomInt = 0
         jobScope.launch {
-            while (flag) {
-                delay(1000)
-                if(flag) {
-                    counter++
-                    randomInt = (0..999).random()
-                    Timber.d("Random value: $randomInt")
-                    // Display a toast every 10 seconds
-                    if (counter % 10 == 0) {
-                        // Toast can not be displayed when called outside main thread
-                       launch(Dispatchers.Main) {
-                           // TODO toasting throws weird log message each time
-                           toast("Random value: $randomInt", baseContext)
-                       }
-                    }
-                }
+            while (randomInt < 8) {
+                delay(500)
+                counter++
+                randomInt = (0..8).random()
+                Timber.d("Random value: $randomInt")
             }
+            // Finish the job and reschedule it
+            // I found it reruns fairly often
+            this@MyJobService.jobFinished(params, true)
         }
     }
 }

@@ -79,6 +79,9 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnMessageStyleNotification.clickAction {
+                    messagingStyleNotification(requireContext())
+                }
                 btnFullscreenNotification.clickAction {
                     bigTimeSensitiveFullscreenNotification(requireContext())
                 }

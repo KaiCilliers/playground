@@ -5,12 +5,15 @@ import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.*
 import android.content.ComponentName
+import android.graphics.drawable.Icon
 import android.net.ConnectivityManager
 import android.view.View
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.playground.MainActivity
@@ -77,7 +80,6 @@ class FragmentHomeAction(
 
     /**
      * TODO snackbar with action to dismiss, maybe change the color a bit to test that out
-     * TODO fok .show()!!
      */
     override fun show(message: String) {
         snackbar(message, "Dismiss") { Timber.v("Cancelled job service snackbar") }.show()
@@ -390,6 +392,56 @@ class FragmentHomeAction(
         NotificationManagerCompat.from(context).apply {
             notify((99..9999).random(), builder.build())
         }
-
     }
+
+    fun messagingStyleNotification(context: Context, activity: Activity = DummyActivity()) {
+val notificationId = (444..9999).random()
+        // Notification on click destination
+        val dummyIntent = Intent(context, activity::class.java).apply {
+            // flags help preserve the user's expected navigation experience after they open your app via the notification
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        val pendingDummy = PendingIntent.getActivity(context, 0, dummyIntent, 0)
+
+        // Notification button action dismiss
+        val dismissIntent = NotificationDismissActivity.getDismissIntent(notificationId, context)
+
+        val timestamp1 = System.currentTimeMillis() + (62_000..62_500).random()
+        val timestamp2 = System.currentTimeMillis() + (61_000..61_500).random()
+        val timestamp3 = System.currentTimeMillis() + (60_000..60_500).random()
+        val timestamp4 = System.currentTimeMillis()
+
+        val me = Person.Builder()
+            .setName("Me")
+            .setIcon(IconCompat.createFromIcon(
+                context, Icon.createWithResource(context, R.drawable.dinosaur_100)
+            )).build()
+        val peter = Person.Builder()
+            .setName("Peter")
+            .setIcon(IconCompat.createFromIcon(
+                context, Icon.createWithResource(context, R.drawable.duck_100)
+            )).build()
+        val alex = Person.Builder()
+            .setName("Alex")
+            .setIcon(IconCompat.createFromIcon(
+                context, Icon.createWithResource(context, R.drawable.dragon_100)
+            )).build()
+
+        val notification = NotificationCompat.Builder(
+            context, stringRes(context, R.string.channel_id))
+            .setSmallIcon(R.drawable.eclair)
+            .setContentIntent(pendingDummy)
+            .addAction(R.drawable.honeycomb, "Dismiss", dismissIntent)
+            .setStyle(NotificationCompat.MessagingStyle(me)
+                .setConversationTitle("Team lunch")
+                .addMessage("Hi", timestamp1, me)
+                .addMessage("What's up?", timestamp2, peter)
+                .addMessage("Not much", timestamp3, me)
+                .addMessage("How about lunch guys!?", timestamp4, alex))
+            .build()
+        NotificationManagerCompat.from(context).apply {
+            notify(notificationId, notification)
+        }
+    }
+
 }
