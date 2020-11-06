@@ -41,4 +41,7 @@
     <string name="navigate_to_sub_graph">Navigate to sub graph</string>
     <string name="navigate_to_optional_destination">Navigate to optional destination</string>
     <string name="next">Next</string>
+    <string name="another_fragment">Another Fragment :)</string>
+    <string name="go_to_nested_graph_via_global_action">Go to nested graph via Global action</string>
+    <string name="nav_global_actions">Navigate to test Gloabal Nav actions</string>
 </resources>
