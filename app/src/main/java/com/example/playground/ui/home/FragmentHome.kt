@@ -38,9 +38,20 @@ class FragmentHome : Fragment() {
     private val actions by lazy { FragmentHomeAction(parentView, parentFragmentManager) }
     private val parentView by lazy { requireActivity().findViewById<View>(android.R.id.content) }
     private lateinit var fragInflater: LayoutInflater
-    private val sharedViewModel: SharedViewModel by viewModels(factoryProducer = { SharedViewModelFactory() })
+    private val factory by lazy { SharedViewModelFactory() }
+    /**
+     * Not working cause it is shared with an Activity and that seems
+     * to cause issues by creating two instances of the viewmodel
+     */
+    // private val sharedViewModel: SharedViewModel by viewModels(factoryProducer = { SharedViewModelFactory() })
+    private val sharedViewModel by lazy { ViewModelProvider(requireActivity(), factory).get(SharedViewModel::class.java) }
     private val musicPreferences by lazy { ExampleMusicPreferences(requireContext()) }
     private val homeScopeIO by lazy { CoroutineScope(Dispatchers.IO) }
+
+    private val testVM: SharedViewModel by viewModels()
+    private val teo: SharedViewModel by viewModels(
+        factoryProducer = { factory }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
