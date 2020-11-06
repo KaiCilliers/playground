@@ -5,11 +5,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * Annotation triggers Hilt's code generation
+ * Commented out because it increases build time
+ */
+// @HiltAndroidApp
 class App : Application() {
     private val applicationScope by lazy {
         CoroutineScope(Dispatchers.Default)

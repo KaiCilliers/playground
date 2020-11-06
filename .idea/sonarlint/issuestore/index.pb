@@ -35,3 +35,13 @@ p
 @app/src/main/java/com/example/playground/ui/home/FragmentHome.kt,b/f/bf2276a314b5887c860c88cd7846c980cdab8d6f
 w
 Gapp/src/main/java/com/example/playground/ui/home/FragmentHomeActions.kt,9/f/9f208d2629d97fcebc5c63e97e9de46c34b82c9e
+l
+<app/src/main/java/com/example/playground/job/SnackContent.kt,f/6/f6de6b80d44bbf64a5c0194c1fdda081aeaccbec
+l
+<app/src/main/java/com/example/playground/job/MyJobService.kt,3/8/38eddff930181d5ef0daef358e3d1a73b4f89b57
+}
+Mapp/src/main/java/com/example/playground/datastore/ExampleMusicPreferences.kt,d/b/db6047605dfc5588acf25e6388df80f7a6631927
+A
+gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
+?
+settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
