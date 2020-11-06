@@ -12,6 +12,8 @@ import java.lang.StringBuilder
 
 class SharedViewModel : ViewModel() {
 
+    val test = "peep"
+
     private val _contacts = MutableLiveData<String>()
     val contacts: LiveData<String>
         get() {

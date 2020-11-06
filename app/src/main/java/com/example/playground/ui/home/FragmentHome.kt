@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -37,8 +38,7 @@ class FragmentHome : Fragment() {
     private val actions by lazy { FragmentHomeAction(parentView, parentFragmentManager) }
     private val parentView by lazy { requireActivity().findViewById<View>(android.R.id.content) }
     private lateinit var fragInflater: LayoutInflater
-    private val factory by lazy { SharedViewModelFactory() }
-    private val sharedViewModel by lazy { ViewModelProvider(requireActivity(), factory).get(SharedViewModel::class.java) }
+    private val sharedViewModel: SharedViewModel by viewModels(factoryProducer = { SharedViewModelFactory() })
     private val musicPreferences by lazy { ExampleMusicPreferences(requireContext()) }
     private val homeScopeIO by lazy { CoroutineScope(Dispatchers.IO) }
 

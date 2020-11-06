@@ -45,3 +45,17 @@ A
 gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
 ?
 settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
+s
+Capp/src/main/java/com/example/playground/ui/nav/OptionalFragment.kt,6/e/6e3d8937abf357387fbd073c196af6f1ae9884cd
+q
+Aapp/src/main/java/com/example/playground/ui/nav/SecondFragment.kt,7/f/7fead69db32b70a799ec0a7ab38f343df947ad4b
+p
+@app/src/main/java/com/example/playground/ui/nav/ThirdFragment.kt,c/b/cb0e33c0c38fdab3ce9c5d67b6ed464e77d6c283
+r
+Bapp/src/main/java/com/example/playground/ui/nav/AnotherFragment.kt,d/3/d369f9473979329e32c96af89666d09b0eafe258
+k
+;app/src/test/java/com/example/playground/ExampleUnitTest.kt,6/6/66a934ccbe05722df060de81ccab14df6d559091
+z
+Japp/src/androidTest/java/com/example/playground/ExampleInstrumentedTest.kt,9/8/9867b8203634636fd204ff3f21554bb5b19f66f7
+p
+@app/src/androidTest/java/com/example/playground/FragmentTests.kt,8/c/8c3d3a76eed44d4851a7a95357ba8d0b59103a14
