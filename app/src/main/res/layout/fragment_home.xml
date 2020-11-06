@@ -17,6 +17,26 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/btn_nav_sub_graph"
+                    android:layout_width="@dimen/wrap_constraints"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_12"
+                    android:text="@string/navigate_to_sub_graph"
+                    app:layout_constraintBottom_toTopOf="@id/btn_nav_optional"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/btn_nav_optional"
+                    android:layout_width="@dimen/wrap_constraints"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_12"
+                    android:text="@string/navigate_to_optional_destination"
+                    app:layout_constraintBottom_toTopOf="@id/btn_data_store_update"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
                     android:id="@+id/btn_data_store_update"
                     android:layout_width="@dimen/wrap_constraints"
                     android:layout_height="wrap_content"

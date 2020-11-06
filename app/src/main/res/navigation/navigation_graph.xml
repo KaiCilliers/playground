@@ -9,5 +9,31 @@
         android:id="@+id/fragmentHome"
         android:name="com.example.playground.ui.home.FragmentHome"
         android:label="FragmentHome"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_fragmentHome_to_secondFragment"
+            app:destination="@id/secondFragment" />
+        <action
+            android:id="@+id/action_fragmentHome_to_optionalFragment"
+            app:destination="@id/optionalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/secondFragment"
+        android:name="com.example.playground.ui.nav.SecondFragment"
+        android:label="fragment_second"
+        tools:layout="@layout/fragment_second" >
+        <action
+            android:id="@+id/action_secondFragment_to_thirdFragment"
+            app:destination="@id/thirdFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/thirdFragment"
+        android:name="com.example.playground.ui.nav.ThirdFragment"
+        android:label="fragment_three"
+        tools:layout="@layout/fragment_three" />
+    <fragment
+        android:id="@+id/optionalFragment"
+        android:name="com.example.playground.ui.nav.OptionalFragment"
+        android:label="fragment_optional"
+        tools:layout="@layout/fragment_optional" />
 </navigation>

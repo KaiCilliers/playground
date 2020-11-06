@@ -35,4 +35,10 @@
     <string name="fullscreen_notification">Fullscreen notification (like for a incoming call)</string>
     <string name="message_style_notification">Message style notification</string>
     <string name="data_store_update_value">Update a DataStore Value</string>
+    <string name="optional_destination">OPTIONAL DESTINATION</string>
+    <string name="nested_two">Nested Two</string>
+    <string name="nested_three">Nested Three</string>
+    <string name="navigate_to_sub_graph">Navigate to sub graph</string>
+    <string name="navigate_to_optional_destination">Navigate to optional destination</string>
+    <string name="next">Next</string>
 </resources>

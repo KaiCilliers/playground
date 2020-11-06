@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import com.example.playground.databinding.CustomToastBinding
 import com.example.playground.databinding.FragmentHomeBinding
 import com.example.playground.datastore.ExampleMusicPreferences
@@ -90,6 +92,16 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnNavSubGraph.clickAction {
+                    findNavController().navigate(
+                        FragmentHomeDirections.actionFragmentHomeToSecondFragment()
+                    )
+                }
+                btnNavOptional.clickAction {
+                    findNavController().navigate(
+                        FragmentHomeDirections.actionFragmentHomeToOptionalFragment()
+                    )
+                }
                 btnDataStoreUpdate.clickAction {
                     homeScopeIO.launch {
                         changeSharedPreferenceDataStoreValue((99..8888).random(), musicPreferences)
