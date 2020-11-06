@@ -94,7 +94,7 @@ class FragmentHome : Fragment() {
             actions.apply {
                 btnNavSubGraph.clickAction {
                     findNavController().navigate(
-                        FragmentHomeDirections.actionFragmentHomeToSecondFragment()
+                        FragmentHomeDirections.actionFragmentHomeToNestedGraph()
                     )
                 }
                 btnNavOptional.clickAction {
