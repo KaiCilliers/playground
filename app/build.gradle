@@ -101,6 +101,15 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
 
+    // Paging
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
+    // optional - RxJava2 support
+    implementation "androidx.paging:paging-rxjava2:$pagingVersion"
+    // optional - Guava ListenableFuture support
+    implementation "androidx.paging:paging-guava:$pagingVersion"
+    // Jetpack Compose Integration
+    implementation "androidx.paging:paging-compose:$jetpackComposeVersion"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

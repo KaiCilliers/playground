@@ -44,4 +44,5 @@
     <string name="another_fragment">Another Fragment :)</string>
     <string name="go_to_nested_graph_via_global_action">Go to nested graph via Global action</string>
     <string name="nav_global_actions">Navigate to test Global Nav actions</string>
+    <string name="main_test_text">I am a screen used to test logic with logcat output</string>
 </resources>

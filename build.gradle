@@ -17,6 +17,8 @@ buildscript {
         gsonVersion = GSON_VERSION
         okhttpVersion = OKHTTP_VERSION
         retrofitVersion = RETROFIT_VERSION
+        pagingVersion = PAGING_VERSION
+        jetpackComposeVersion = JETPACKCOMPOSE_VERSION
     }
     repositories {
         google()
