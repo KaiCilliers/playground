@@ -103,6 +103,11 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnPaging.clickAction {
+                    findNavController().navigate(
+                        FragmentHomeDirections.actionGlobalNavigation()
+                    )
+                }
                 btnNavAnotherFragment.clickAction {
                     findNavController().navigate(
                         FragmentHomeDirections.actionFragmentHomeToAnotherFragment()
