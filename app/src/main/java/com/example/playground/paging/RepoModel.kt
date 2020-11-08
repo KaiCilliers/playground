@@ -1,4 +1,4 @@
-package com.example.playground.paging.model
+package com.example.playground.paging
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  * with the serialized name.
  * This class also defines the Room repos table, where the repo [id] is the primary key.
  */
-data class Repo(
+data class RepoModel(
     @field:SerializedName("id") val id: Long,
     @field:SerializedName("name") val name: String,
     @field:SerializedName("full_name") val fullName: String,
