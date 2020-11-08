@@ -54,9 +54,65 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         handleAnyInputNotification()
-        someFlowOperations()
+
+    }
+    /**
+     * A notification supports a reply feature where
+     * it can send a reply in the notification after
+     * typing and hitting send.
+     *
+     * The send button fires an intent to launch
+     * [MainActivity], thus this method is called at
+     * onCreate.
+     *
+     * This method captures and handles the message
+     * received via the notification and it handles
+     * what to do with the notification further
+     */
+    private fun handleAnyInputNotification() {
+        // Handle input from input Notification
+        val remoteInput = RemoteInput.getResultsFromIntent(intent)
+        remoteInput?.let {
+            val replyText =
+                "${remoteInput.getCharSequence(getString(R.string.notification_key_reply))}"
+            val repliedNotification =
+                NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
+                    .setSmallIcon(R.drawable.ic_sleep_active)
+                    .setContentText("Reply received: $replyText")
+                    .build()
+            val notificationMan = NotificationManagerCompat.from(baseContext)
+            notificationMan.notify(notificationReplyIdUsedToUpdate, repliedNotification)
+        }
+        // Cancel input notification
+        intent.extras?.let {
+            if (it.getBoolean(getString(R.string.has_notification_id_key), false)) {
+                val notificationId = it.getInt(getString(R.string.notification_id_key), -1)
+                NotificationManagerCompat.from(baseContext).cancel(notificationId)
+            }
+        }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                // If result is cancelled, the result arrays are empty
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    viewModel.fetchContacts(contentResolver)
+                    toast("Permission to read contacts granted", baseContext)
+                } else {
+                    // permission denied - Disable the functionality that depends on this permission
+                    toast("Permission to read contacts denied", baseContext)
+                }
+                return
+            }
+        }
+    }
     private fun someFlowOperations() {
         /**
          * ONE
@@ -154,65 +210,6 @@ class MainActivity : AppCompatActivity() {
         for (i in 1..4) {
             delay(100) // pretend we are asynchronously waiting 100 ms
             emit(i) // emit next value
-        }
-    }
-
-
-    /**
-     * A notification supports a reply feature where
-     * it can send a reply in the notification after
-     * typing and hitting send.
-     *
-     * The send button fires an intent to launch
-     * [MainActivity], thus this method is called at
-     * onCreate.
-     *
-     * This method captures and handles the message
-     * received via the notification and it handles
-     * what to do with the notification further
-     */
-    private fun handleAnyInputNotification() {
-        // Handle input from input Notification
-        val remoteInput = RemoteInput.getResultsFromIntent(intent)
-        remoteInput?.let {
-            val replyText =
-                "${remoteInput.getCharSequence(getString(R.string.notification_key_reply))}"
-            val repliedNotification =
-                NotificationCompat.Builder(baseContext, getString(R.string.channel_id))
-                    .setSmallIcon(R.drawable.ic_sleep_active)
-                    .setContentText("Reply received: $replyText")
-                    .build()
-            val notificationMan = NotificationManagerCompat.from(baseContext)
-            notificationMan.notify(notificationReplyIdUsedToUpdate, repliedNotification)
-        }
-        // Cancel input notification
-        intent.extras?.let {
-            if (it.getBoolean(getString(R.string.has_notification_id_key), false)) {
-                val notificationId = it.getInt(getString(R.string.notification_id_key), -1)
-                NotificationManagerCompat.from(baseContext).cancel(notificationId)
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            1 -> {
-                // If result is cancelled, the result arrays are empty
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted
-                    viewModel.fetchContacts(contentResolver)
-                    toast("Permission to read contacts granted", baseContext)
-                } else {
-                    // permission denied - Disable the functionality that depends on this permission
-                    toast("Permission to read contacts denied", baseContext)
-                }
-                return
-            }
         }
     }
 }
