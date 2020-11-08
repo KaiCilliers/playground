@@ -1,4 +1,4 @@
-package com.example.playground.paging
+package com.example.playground.paging.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playground.R
+import com.example.playground.paging.RepoModel
 import com.example.playground.util.clickAction
 import kotlinx.android.synthetic.main.list_item_github_repo.view.*
 
 /**
  * View Holder for a [RepoModel] RecyclerView list item
+ * TODO impl databinding
  */
 class RepoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 

@@ -27,5 +27,10 @@ class SecondFragment : Fragment() {
                 SecondFragmentDirections.actionSecondFragmentToThirdFragment()
             )
         }
+        btn_repos.clickAction {
+            findNavController().navigate(
+                SecondFragmentDirections.actionSecondFragmentToRepositoriesFragment2() // TODO rename this longass name
+            )
+        }
     }
 }

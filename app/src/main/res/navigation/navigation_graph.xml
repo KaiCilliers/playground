@@ -40,7 +40,15 @@
             <action
                 android:id="@+id/action_secondFragment_to_thirdFragment"
                 app:destination="@id/thirdFragment" />
+            <action
+                android:id="@+id/action_secondFragment_to_repositoriesFragment2"
+                app:destination="@id/repositoriesFragment2" />
         </fragment>
+        <fragment
+            android:id="@+id/repositoriesFragment2"
+            android:name="com.example.playground.paging.ui.RepositoriesFragment"
+            android:label="fragment_repositories"
+            tools:layout="@layout/fragment_repositories" />
     </navigation>
     <fragment
         android:id="@+id/anotherFragment"
