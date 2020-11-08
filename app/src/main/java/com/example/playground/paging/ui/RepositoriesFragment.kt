@@ -47,7 +47,12 @@ class RepositoriesFragment : Fragment() {
         val decoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         binding.rcRepositories.addItemDecoration(decoration)
 
-        binding.rcRepositories.adapter = adapter
+        binding.rcRepositories.adapter = adapter.withLoadStateHeaderAndFooter(
+            // add it to header as well for when you want to dispose of
+            // previous pages and need to reload them
+            header = ReposLoadStateAdapter { adapter.retry() },
+            footer = ReposLoadStateAdapter { adapter.retry() }
+        )
 
         val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: DEFAULT_QUERY
         search(query)
