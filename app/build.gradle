@@ -41,6 +41,9 @@ android {
         // Enable Coroutines and Flow APIs
 //        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
 //        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+
+        // Enable RemoteMediator which is experimental
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
 }
 
