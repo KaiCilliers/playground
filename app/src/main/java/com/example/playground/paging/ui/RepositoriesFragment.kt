@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -15,6 +16,8 @@ import com.example.playground.R
 import com.example.playground.databinding.FragmentRepositoriesBinding
 import com.example.playground.paging.Injection
 import com.example.playground.paging.SearchRepoViewModel
+import com.example.playground.util.clickAction
+import com.example.playground.util.toast
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -47,18 +50,43 @@ class RepositoriesFragment : Fragment() {
         val decoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         binding.rcRepositories.addItemDecoration(decoration)
 
-        binding.rcRepositories.adapter = adapter.withLoadStateHeaderAndFooter(
-            // add it to header as well for when you want to dispose of
-            // previous pages and need to reload them
-            header = ReposLoadStateAdapter { adapter.retry() },
-            footer = ReposLoadStateAdapter { adapter.retry() }
-        )
+        binding.retryButton.clickAction {
+            adapter.retry()
+        }
+
+        initAdapter()
 
         val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: DEFAULT_QUERY
         search(query)
         initSearch(query)
 
         return binding.root
+    }
+
+    private fun initAdapter() {
+        binding.rcRepositories.adapter = adapter.withLoadStateHeaderAndFooter(
+            // add it to header as well for when you want to dispose of
+            // previous pages and need to reload them
+            header = ReposLoadStateAdapter { adapter.retry() },
+            footer = ReposLoadStateAdapter { adapter.retry() }
+        )
+        adapter.addLoadStateListener { loadState ->
+            // Only show the list if refresh succeeds
+            binding.rcRepositories.isVisible = loadState.source.refresh is LoadState.NotLoading
+            // SHow loading spinner during initial load or refresh
+            binding.pbMainLoading.isVisible = loadState.source.refresh is LoadState.Loading
+            // Show the retry state if initial load or refresh fails
+            binding.retryButton.isVisible = loadState.source.refresh is LoadState.Error
+
+            // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+            val errorState = loadState.source.append as? LoadState.Error
+                ?: loadState.source.prepend as? LoadState.Error
+                ?: loadState.append as? LoadState.Error
+                ?: loadState.prepend as? LoadState.Error
+            errorState?.let {
+                toast("\\uD83D\\uDE28 Wooops ${it.error}", requireContext())
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -136,18 +164,6 @@ class RepositoriesFragment : Fragment() {
                 .filter { it.refresh is LoadState.NotLoading }
                 // Receive/collect an emit and run your code
                 .collect { binding.rcRepositories.scrollToPosition(0) }
-        }
-    }
-
-
-    // TODO unused
-    private fun showEmptyList(show: Boolean) {
-        if (show) {
-            binding.tvEmptyList.visibility = View.VISIBLE
-            binding.rcRepositories.visibility = View.GONE
-        } else {
-            binding.tvEmptyList.visibility = View.GONE
-            binding.rcRepositories.visibility = View.VISIBLE
         }
     }
 

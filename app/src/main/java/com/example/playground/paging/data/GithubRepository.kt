@@ -14,7 +14,11 @@ import kotlinx.coroutines.flow.Flow
 class GithubRepository(private val service: GithubService) {
     // TODO remove constant
     companion object {
-        private const val NETWORK_PAGE_SIZE = 50
+        // NOTE - Value should be 50. Six is way too low and
+        // just used to test the footer loading icon and
+        // retry button. You are making too many network
+        // requests by only fetching 6 items per call/page
+        private const val NETWORK_PAGE_SIZE = 6
     }
     /**
      * Construct a pager and return it as a Flow object
