@@ -1,6 +1,6 @@
 package com.example.playground.paging.api
 
-import com.example.playground.paging.RepoModel
+import com.example.playground.paging.model.RepoModel
 import com.google.gson.annotations.SerializedName
 
 /**

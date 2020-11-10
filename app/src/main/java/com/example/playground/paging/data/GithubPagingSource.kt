@@ -1,7 +1,7 @@
 package com.example.playground.paging.data
 
 import androidx.paging.PagingSource
-import com.example.playground.paging.RepoModel
+import com.example.playground.paging.model.RepoModel
 import com.example.playground.paging.api.GithubService
 import com.example.playground.paging.api.IN_QUALIFIER
 

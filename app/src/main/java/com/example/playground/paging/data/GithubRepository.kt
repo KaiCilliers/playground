@@ -3,7 +3,7 @@ package com.example.playground.paging.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.playground.paging.RepoModel
+import com.example.playground.paging.model.RepoModel
 import com.example.playground.paging.api.GithubService
 import kotlinx.coroutines.flow.Flow
 
@@ -18,7 +18,7 @@ class GithubRepository(private val service: GithubService) {
         // just used to test the footer loading icon and
         // retry button. You are making too many network
         // requests by only fetching 6 items per call/page
-        private const val NETWORK_PAGE_SIZE = 6
+        private const val NETWORK_PAGE_SIZE = 50
     }
     /**
      * Construct a pager and return it as a Flow object

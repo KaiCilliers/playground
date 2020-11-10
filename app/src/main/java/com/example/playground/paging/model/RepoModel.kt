@@ -1,4 +1,4 @@
-package com.example.playground.paging
+package com.example.playground.paging.model
 
 import com.google.gson.annotations.SerializedName
 
