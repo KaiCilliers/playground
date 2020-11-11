@@ -12,6 +12,8 @@ private const val  GITHUB_STARTING_PAGE_INDEX = 1
  * We have defined the type of paging key,
  * the type of data loaded, and where the
  * data is retrieved from
+ *
+ * TODO replaced by RemoteMediator subclass
  */
 class GithubPagingSource (
     private val service: GithubService,
