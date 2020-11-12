@@ -70,7 +70,11 @@
         android:id="@+id/blurFragment"
         android:name="com.example.playground.workmanager.ui.BlurFragment"
         android:label="BlurFragment"
-        tools:layout="@layout/fragment_work_manager_blur"/>
+        tools:layout="@layout/fragment_work_manager_blur">
+        <argument
+            android:name="KEY_IMAGE_URI"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/selectFragment"
         android:name="com.example.playground.workmanager.ui.SelectFragment"

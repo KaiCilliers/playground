@@ -10,7 +10,7 @@ import com.example.playground.workmanager.BlurViewModel
 
 class BlurFragment : Fragment() {
 
-    private lateinit var viewModel: BlurViewModel
+//    private val viewModel by lazy {  }
     private lateinit var binding: FragmentWorkManagerBlurBinding
 
     override fun onCreateView(
