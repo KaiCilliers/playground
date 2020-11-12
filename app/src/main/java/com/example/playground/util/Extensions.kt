@@ -15,3 +15,4 @@ fun snack(msg: String, view: View, duration: Int) = Snackbar.make(view, msg, dur
 inline fun View.clickAction(crossinline action: () -> Unit) = setOnClickListener { action() }
 inline fun <T> LiveData<T>.subscribe(owner: LifecycleOwner, crossinline action: (T) -> Unit) = observe(owner, Observer { action(it) })
 fun stringRes(context: Context, id: Int) = context.getString(id)
+fun stringRes(context: Context, id: Int, vararg formatArgs: Any) = context.getString(id, *formatArgs)

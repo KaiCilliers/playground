@@ -11,6 +11,7 @@
     <dimen name="dimen_16">16dp</dimen>
     <dimen name="dimen_12">12dp</dimen>
     <dimen name="font_size_24">24sp</dimen>
+    <dimen name="font_size_20">20sp</dimen>
     <dimen name="font_size_16">16sp</dimen>
     <dimen name="margin_4">4dp</dimen>
 </resources>

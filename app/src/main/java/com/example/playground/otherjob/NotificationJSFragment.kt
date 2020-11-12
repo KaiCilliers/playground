@@ -10,12 +10,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.example.playground.R
 import com.example.playground.databinding.FragmentNotificationJobServiceBinding
 import com.example.playground.util.clickAction
+import com.example.playground.util.stringRes
 import com.example.playground.util.toast
+import timber.log.Timber
 
 class NotificationJSFragment : Fragment() {
     private lateinit var binding: FragmentNotificationJobServiceBinding
@@ -31,13 +34,28 @@ class NotificationJSFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentNotificationJobServiceBinding.inflate(inflater)
-        setupClicks()
+        setupUi()
         return binding.root
     }
 
-    private fun setupClicks() {
+    private fun setupUi() {
+        // Button clicks
         binding.btnSchedule.clickAction { scheduleJob() }
         binding.btnCancel.clickAction { cancelJobs() }
+
+        // Seekbar
+        binding.sbOverrideValue.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.tvDeadlineValue.text = when {
+                    progress > 0 -> stringRes(requireContext(), R.string.seconds_suffix, progress)
+                    else -> "Not set"
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun scheduleJob() {
@@ -54,11 +72,18 @@ class NotificationJSFragment : Fragment() {
             )
         ).apply {
             setRequiredNetworkType(selectedNetworkOption)
+            setRequiresDeviceIdle(binding.switchIdle.isChecked)
+            setRequiresCharging(binding.switchCharging.isChecked)
+            if(binding.sbOverrideValue.progress > 0) {
+                setOverrideDeadline(binding.sbOverrideValue.progress * 1000L)
+            }
         }
 
         val constraintSet = selectedNetworkOption != JobInfo.NETWORK_TYPE_NONE
+                    || binding.switchIdle.isChecked || binding.switchCharging.isChecked
+                    || binding.sbOverrideValue.progress > 0
 
-        // TODO remove this check and remove the none radiobutton option
+
         if (constraintSet) {
             scheduler.schedule(jobInfo.build())
             toast("Job Scheduled, job will run when the constraints are met", requireContext())

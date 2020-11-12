@@ -7,4 +7,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="heading">
+        <item name="android:textSize">@dimen/font_size_20</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:layout_margin">@dimen/margin_4</item>
+    </style>
+
 </resources>

@@ -63,4 +63,9 @@
     <string name="schedule_job">Schedule Job</string>
     <string name="cancel_jobs">Cancel Jobs</string>
     <string name="notification_job_service">Notification Job Service</string>
+    <string name="requires">Requires:</string>
+    <string name="device_idle">Device Idle</string>
+    <string name="device_charging">Device Charging</string>
+    <string name="override_deadline">Override Deadline:</string>
+    <string name="seconds_suffix">%1$d seconds</string>
 </resources>

@@ -11,12 +11,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/lbl_network_type_required"
-            android:textSize="@dimen/font_size_24"
-            android:fontFamily="monospace"
-            android:layout_margin="@dimen/margin_4"
+            style="@style/heading"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
         <RadioGroup
             android:id="@+id/rg_network_type"
             android:layout_width="0dp"
@@ -50,13 +48,71 @@
                 android:layout_marginLeft="@dimen/margin_8"
                 android:layout_height="wrap_content"/>
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_requires"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/requires"
+            style="@style/heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rg_network_type" />
+        <Switch
+            android:id="@+id/switch_idle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/device_idle"
+            android:fontFamily="monospace"
+            android:layout_marginLeft="@dimen/margin_8"
+            app:layout_constraintTop_toBottomOf="@id/tv_requires"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/switch_charging"/>
+        <Switch
+            android:id="@+id/switch_charging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/device_charging"
+            android:fontFamily="monospace"
+            android:layout_marginLeft="@dimen/margin_8"
+            app:layout_constraintTop_toBottomOf="@id/tv_requires"
+            app:layout_constraintStart_toEndOf="@id/switch_idle"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/override_deadline"
+            style="@style/heading"
+            app:layout_constraintTop_toBottomOf="@id/switch_idle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_deadline_value"/>
+        <TextView
+            android:id="@+id/tv_deadline_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Set"
+            style="@style/heading"
+            app:layout_constraintTop_toBottomOf="@id/switch_idle"
+            app:layout_constraintStart_toEndOf="@id/tv_deadline"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <SeekBar
+            android:id="@+id/sb_override_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_4"
+            app:layout_constraintTop_toBottomOf="@id/tv_deadline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <Button
             android:id="@+id/btn_schedule"
             android:text="@string/schedule_job"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_4"
-            app:layout_constraintTop_toBottomOf="@+id/rg_network_type"
+            app:layout_constraintTop_toBottomOf="@+id/sb_override_value"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_cancel"/>
         <Button
@@ -65,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_4"
-            app:layout_constraintTop_toBottomOf="@+id/rg_network_type"
+            app:layout_constraintTop_toBottomOf="@+id/sb_override_value"
             app:layout_constraintStart_toEndOf="@id/btn_schedule"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
