@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_fragmentHome_to_notificationJSFragment"
             app:destination="@id/notificationJSFragment" />
+        <action
+            android:id="@+id/action_fragmentHome_to_selectFragment"
+            app:destination="@id/selectFragment" />
     </fragment>
     <fragment
         android:id="@+id/optionalFragment"
@@ -63,4 +66,18 @@
         android:name="com.example.playground.otherjob.NotificationJSFragment"
         android:label="NotificationJSFragment"
         tools:layout="@layout/fragment_notification_job_service"/>
+    <fragment
+        android:id="@+id/blurFragment"
+        android:name="com.example.playground.workmanager.ui.BlurFragment"
+        android:label="BlurFragment"
+        tools:layout="@layout/fragment_work_manager_blur"/>
+    <fragment
+        android:id="@+id/selectFragment"
+        android:name="com.example.playground.workmanager.ui.SelectFragment"
+        android:label="SelectFragment"
+        tools:layout="@layout/fragment_select">
+        <action
+            android:id="@+id/action_selectFragment_to_blurFragment"
+            app:destination="@id/blurFragment" />
+    </fragment>
 </navigation>

@@ -103,6 +103,11 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnBlur.clickAction {
+                    findNavController().navigate(
+                        FragmentHomeDirections.actionFragmentHomeToSelectFragment()
+                    )
+                }
                 btnOtherJob.clickAction {
                     findNavController().navigate(
                         FragmentHomeDirections.actionFragmentHomeToNotificationJSFragment()
