@@ -7,6 +7,7 @@ import com.example.playground.paging.model.RepoModel
 import com.example.playground.paging.api.GithubService
 import com.example.playground.paging.cache.RepoDatabase
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 
 /**
  * Repository class that work with local and remote data sources
@@ -22,7 +23,7 @@ class GithubRepository(
         // just used to test the footer loading icon and
         // retry button. You are making too many network
         // requests by only fetching 6 items per call/page
-        private const val NETWORK_PAGE_SIZE = 50
+        private const val NETWORK_PAGE_SIZE = 20
     }
     /**
      * Construct a pager and return it as a Flow object
@@ -61,6 +62,7 @@ class GithubRepository(
         val pagingSourceFactory = {
             db.repoDao().reposByName(dbQuery)
         }
+        Timber.d("REPO getSearchResultStream")
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,

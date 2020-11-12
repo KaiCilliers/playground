@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.playground.paging.api.GithubService
 import com.example.playground.paging.cache.RepoDatabase
 import com.example.playground.paging.data.GithubRepository
+import timber.log.Timber
 
 /**
  * Class that handles object creation.
@@ -20,6 +21,7 @@ object Injection {
      * [GithubLocalCache]
      */
     private fun provideGithubRepository(context: Context): GithubRepository {
+        Timber.d("injection provide repo")
         return GithubRepository(
             GithubService.create(),
             RepoDatabase.getInstance(context)
@@ -31,6 +33,7 @@ object Injection {
      * [ViewModel] objects.
      */
     fun provideViewModelFactory(context: Context): ViewModelProvider.Factory {
+        Timber.d("injection provide VM")
         return ViewModelFactory(provideGithubRepository(context))
     }
 }

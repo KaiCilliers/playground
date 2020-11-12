@@ -10,6 +10,7 @@ import com.example.playground.paging.api.IN_QUALIFIER
 import com.example.playground.paging.cache.RepoDatabase
 import com.example.playground.paging.model.RemoteKeys
 import com.example.playground.paging.model.RepoModel
+import timber.log.Timber
 import java.io.InvalidObjectException
 import java.lang.Exception
 
@@ -45,11 +46,17 @@ class GithubRemoteMediator(
      * were loaded before, the most recently accessed index in the
      * list, and the PagingConfig we defined when initializing the
      * paging stream
+     *
+     * TODO bug fix
+     * load() is called multiple times to fetch multiple pages of data
+     * which causes list to flicker as it updates with each separate
+     * network call
      */
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, RepoModel>
     ): MediatorResult {
+        Timber.d("mediator load")
         /**
          * Find out what page we need to
          * load from the network, based on
@@ -62,6 +69,7 @@ class GithubRemoteMediator(
             // the anchorPosition is the first visible position in the displayed list, so
             // we will need to load the page that contains that specific item
             LoadType.REFRESH -> {
+                Timber.d("mediator load type refresh")
                 // Based on the anchorPosition form state, we can get the closest RepoModel
                 // item to that position by calling state.closestItemToPosition()
                 // Based on the RepoModel item, we can get the RemoteKeys from the database
@@ -76,6 +84,7 @@ class GithubRemoteMediator(
             }
             // When we need to load data at the beginning og the currently loaded data set
             LoadType.PREPEND -> {
+                Timber.d("mediator loadtype prepend")
                 // Based on the first item in the database we need to compute the
                 // network page key
                 // Get the remote key of the first RepoModel item loaded from the database
@@ -95,6 +104,7 @@ class GithubRemoteMediator(
             }
             // When we need to load data at the end of the currently loaded data set
             LoadType.APPEND -> {
+                Timber.d("mediator loadtype append")
                 // Based on the last item in the database we need to compute the network page key
                 // Get the remote key of the last RepoModel item loaded from the database
                 val remoteKeys = remoteKeysForLastItem(state)
@@ -110,10 +120,11 @@ class GithubRemoteMediator(
             /**
              * Trigger the network request
              */
+            Timber.d("mediator network call")
             val apiResponse = service.searchRepos(
                 apiQuery, page, state.config.pageSize
             )
-
+            Timber.d("Mediator after network call")
             /**
              * Once the network request completes
              *
@@ -133,30 +144,35 @@ class GithubRemoteMediator(
             val repos = apiResponse.items
             // Query returns empty list if no result is found when requesting a new "page" of RepoModels
             val endOfPaginationReached = repos.isEmpty()
-            // Run like a custom transaction (if single query fails in block then rollback all queries)
-            db.withTransaction {
-                // clear all tables in the database if new query
-                if (loadType == LoadType.REFRESH) {
-                    db.keysDao().clear()
-                    db.repoDao().clear()
-                }
-                // Set previous and next page keys
-                val prevKey = if (page == GITHUB_STARTING_PAGE_INDEX) null else page - 1
-                val nextKey = if (endOfPaginationReached) null else page + 1
-                // Create key objects for each RepoModel
-                // Each RepoModel is going to have the same previous and next page index
-                // which indicates they all belong in the same page of data
-                val keys = repos.map {
-                    RemoteKeys(
-                        repoId = it.id,
-                        prevKey = prevKey,
-                        nextKey = nextKey
-                    )
-                }
-                // Populate tables
-                db.keysDao().insertAll(keys)
-                db.repoDao().insertAll(repos)
+            Timber.d("Repos empty: $endOfPaginationReached")
+//            if(!endOfPaginationReached) { // I would add this logic, it makes sense
+                // Run like a custom transaction (if single query fails in block then rollback all queries)
+                db.withTransaction {
+                    Timber.d("inside transaction")
+                    // clear all tables in the database if new query
+                    if (loadType == LoadType.REFRESH) {
+                        db.keysDao().clear()
+                        db.repoDao().clear()
+                    }
+                    // Set previous and next page keys
+                    val prevKey = if (page == GITHUB_STARTING_PAGE_INDEX) null else page - 1
+                    val nextKey = if (endOfPaginationReached) null else page + 1
+                    // Create key objects for each RepoModel
+                    // Each RepoModel is going to have the same previous and next page index
+                    // which indicates they all belong in the same page of data
+                    val keys = repos.map {
+                        RemoteKeys(
+                            repoId = it.id,
+                            prevKey = prevKey,
+                            nextKey = nextKey
+                        )
+                    }
+                    // Populate tables
+                    db.keysDao().insertAll(keys)
+                    db.repoDao().insertAll(repos)
+//                }
             }
+            Timber.d("before mediator returns: $endOfPaginationReached")
             // @return either true or false
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
