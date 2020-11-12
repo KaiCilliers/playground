@@ -56,4 +56,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_button_github">Search some Github Repositories</string>
     <string name="paging_in_action">Paging in Action</string>
+    <string name="lbl_network_type_required">Network Type Required:</string>
+    <string name="none">None</string>
+    <string name="any">Any</string>
+    <string name="wifi">Wifi</string>
+    <string name="schedule_job">Schedule Job</string>
+    <string name="cancel_jobs">Cancel Jobs</string>
+    <string name="notification_job_service">Notification Job Service</string>
 </resources>

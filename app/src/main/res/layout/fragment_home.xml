@@ -17,6 +17,16 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/btn_other_job"
+                    android:layout_width="@dimen/wrap_constraints"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_12"
+                    android:text="@string/notification_job_service"
+                    app:layout_constraintBottom_toTopOf="@id/btn_paging"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
                     android:id="@+id/btn_paging"
                     android:layout_width="@dimen/wrap_constraints"
                     android:layout_height="wrap_content"

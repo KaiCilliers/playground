@@ -35,6 +35,9 @@
         <service
             android:name=".job.MyJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".otherjob.NotificationJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver android:name=".broadcast.MyReceiver">
             <!-- Not working - have context-register -->

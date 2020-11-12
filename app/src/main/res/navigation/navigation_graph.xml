@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_fragmentHome_to_anotherFragment"
             app:destination="@id/anotherFragment" />
+        <action
+            android:id="@+id/action_fragmentHome_to_notificationJSFragment"
+            app:destination="@id/notificationJSFragment" />
     </fragment>
     <fragment
         android:id="@+id/optionalFragment"
@@ -55,4 +58,9 @@
         android:name="com.example.playground.ui.nav.AnotherFragment"
         android:label="AnotherFragment"
         tools:layout="@layout/fragment_another"/><action android:id="@+id/action_global_navigation" app:destination="@id/navigation"/>
+    <fragment
+        android:id="@+id/notificationJSFragment"
+        android:name="com.example.playground.otherjob.NotificationJSFragment"
+        android:label="NotificationJSFragment"
+        tools:layout="@layout/fragment_notification_job_service"/>
 </navigation>
