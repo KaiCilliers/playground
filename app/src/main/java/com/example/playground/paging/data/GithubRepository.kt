@@ -5,13 +5,17 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.playground.paging.model.RepoModel
 import com.example.playground.paging.api.GithubService
+import com.example.playground.paging.cache.RepoDatabase
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Repository class that work with local and remote data sources
  */
 //@ExperimentalCoroutinesApi
-class GithubRepository(private val service: GithubService) {
+class GithubRepository(
+    private val service: GithubService,
+    private val db: RepoDatabase
+) {
     // TODO remove constant
     companion object {
         // NOTE - Value should be 50. Six is way too low and
@@ -52,12 +56,20 @@ class GithubRepository(private val service: GithubService) {
      *
      */
     fun getSearchResultStream(query: String): Flow<PagingData<RepoModel>> {
+        // appending '%' so we can allow other characters to be before and after the query string
+        val dbQuery = "%${query.replace(' ','%')}%"
+        val pagingSourceFactory = {
+            db.repoDao().reposByName(dbQuery)
+        }
         return Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { GithubPagingSource(service, query) }
+            remoteMediator = GithubRemoteMediator(
+                query, service, db
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 }

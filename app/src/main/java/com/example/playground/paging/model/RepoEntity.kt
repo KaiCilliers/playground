@@ -4,7 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "repos")
+//@Entity(tableName = "repos")
+// TODO see if can separate model and entity
 data class RepoEntity(
     @PrimaryKey @field:SerializedName("id") val id: Long,
     @field:SerializedName("name") val name: String,

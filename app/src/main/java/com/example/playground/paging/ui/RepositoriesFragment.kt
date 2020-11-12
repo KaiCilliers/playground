@@ -43,7 +43,7 @@ class RepositoriesFragment : Fragment() {
         binding = FragmentRepositoriesBinding.inflate(layoutInflater)
 
         // get the view model
-        viewModel = ViewModelProvider(this, Injection.provideViewModelFactory())
+        viewModel = ViewModelProvider(this, Injection.provideViewModelFactory(requireContext()))
             .get(SearchRepoViewModel::class.java)
 
         // add dividers between RecyclerView's row items
