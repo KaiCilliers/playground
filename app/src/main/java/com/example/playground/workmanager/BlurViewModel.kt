@@ -3,9 +3,11 @@ package com.example.playground.workmanager
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.work.*
 import com.example.playground.workmanager.util.IMAGE_MANIPULATION_WORK_NAME
 import com.example.playground.workmanager.util.KEY_IMAGE_URI
+import com.example.playground.workmanager.util.TAG_OUTPUT
 import com.example.playground.workmanager.workers.BlurWorker
 import com.example.playground.workmanager.workers.CleanUpWorker
 import com.example.playground.workmanager.workers.SaveImageToFileWorker
@@ -14,8 +16,16 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
 
     private val workManager by lazy { WorkManager.getInstance(application) }
 
+    internal val outputWorkInfos: LiveData<List<WorkInfo>>
+
     internal var imageUri: Uri? = null
     internal var outputUri: Uri? = null
+
+    init {
+        // This transformation makes sure that whenever the current
+        // work Id changes the WorkInfo the UI is listening to changes
+        outputWorkInfos = workManager.getWorkInfosByTagLiveData(TAG_OUTPUT)
+    }
 
     /**
      * Create the WorkRequest to apply the blur
@@ -49,7 +59,9 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
         }
 
         // Add WorkRequest to save the image to the filesystem
-        val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>().build()
+        val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
+            .addTag(TAG_OUTPUT)
+            .build()
 
         continuation = continuation.then(save)
 
