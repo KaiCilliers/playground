@@ -8,6 +8,7 @@ import androidx.work.*
 import com.example.playground.workmanager.util.IMAGE_MANIPULATION_WORK_NAME
 import com.example.playground.workmanager.util.KEY_IMAGE_URI
 import com.example.playground.workmanager.util.TAG_OUTPUT
+import com.example.playground.workmanager.util.TAG_PROGRESS
 import com.example.playground.workmanager.workers.BlurWorker
 import com.example.playground.workmanager.workers.CleanUpWorker
 import com.example.playground.workmanager.workers.SaveImageToFileWorker
@@ -17,6 +18,7 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
     private val workManager by lazy { WorkManager.getInstance(application) }
 
     internal val outputWorkInfos: LiveData<List<WorkInfo>>
+    internal val progressWorkInfoItems: LiveData<List<WorkInfo>>
 
     internal var imageUri: Uri? = null
     internal var outputUri: Uri? = null
@@ -25,6 +27,7 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
         // This transformation makes sure that whenever the current
         // work Id changes the WorkInfo the UI is listening to changes
         outputWorkInfos = workManager.getWorkInfosByTagLiveData(TAG_OUTPUT)
+        progressWorkInfoItems = workManager.getWorkInfosByTagLiveData(TAG_PROGRESS)
     }
 
     /**
@@ -55,6 +58,7 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
             if (i == 0) {
                 blurBuilder.setInputData(createInputDataForUri())
             }
+            blurBuilder.addTag(TAG_PROGRESS)
             continuation = continuation.then(blurBuilder.build())
         }
 

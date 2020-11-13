@@ -15,6 +15,7 @@ import com.example.playground.databinding.FragmentWorkManagerBlurBinding
 import com.example.playground.util.clickAction
 import com.example.playground.workmanager.BlurViewModel
 import com.example.playground.workmanager.util.KEY_IMAGE_URI
+import com.example.playground.workmanager.util.PROGRESS
 import timber.log.Timber
 
 class BlurFragment : Fragment() {
@@ -59,9 +60,27 @@ class BlurFragment : Fragment() {
             viewModel.cancelWork()
         }
 
+        // show work status
         viewModel.outputWorkInfos.observe(requireActivity(), workInfosObserver())
 
+        // show work progress
+        viewModel.progressWorkInfoItems.observe(requireActivity(), progressObserver())
+
         return binding.root
+    }
+
+    private fun progressObserver(): Observer<List<WorkInfo>> {
+        return Observer {
+            if (it.isNullOrEmpty()) {
+                return@Observer
+            }
+            it.forEach { workInfo ->
+                if (workInfo.state == WorkInfo.State.RUNNING) {
+                    val progress = workInfo.progress.getInt(PROGRESS, 0)
+                    binding.pbLoading.progress = progress
+                }
+            }
+        }
     }
 
     private fun workInfosObserver(): Observer<List<WorkInfo>> {
@@ -116,6 +135,7 @@ class BlurFragment : Fragment() {
             pbLoading.visibility = View.GONE
             btnCancel.visibility = View.GONE
             btnGo.visibility = View.VISIBLE
+            pbLoading.progress = 0
         }
     }
 }
