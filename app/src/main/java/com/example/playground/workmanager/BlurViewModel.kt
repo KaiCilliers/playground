@@ -3,8 +3,14 @@ package com.example.playground.workmanager
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.example.playground.workmanager.work.BlurWorker
 
 class BlurViewModel (application: Application) : AndroidViewModel(application) {
+
+    private val workManager by lazy { WorkManager.getInstance(application) }
+
     internal var imageUri: Uri? = null
     internal var outputUri: Uri? = null
 
@@ -13,7 +19,11 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
      * and save the resulting image
      * @param blurLevel The amount to blur the image
      */
-    internal fun applyBlur(blurLevel: Int) {}
+    internal fun applyBlur(blurLevel: Int) {
+        workManager.enqueue(
+            OneTimeWorkRequest.from(BlurWorker::class.java)
+        )
+    }
 
     private fun uriOrNull(uriString: String?): Uri? {
         return if (!uriString.isNullOrEmpty()) {
