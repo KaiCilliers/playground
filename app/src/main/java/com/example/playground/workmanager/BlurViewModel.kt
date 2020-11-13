@@ -31,15 +31,23 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
                 OneTimeWorkRequest.from(CleanUpWorker::class.java)
             )
 
-        // Add WorkRequest to blur the image
-        val blurRequest = OneTimeWorkRequest.Builder(BlurWorker::class.java)
-            .setInputData(createInputDataForUri())
-            .build()
-
-        continuation = continuation.then(blurRequest)
+        // Add WorkRequest to blur the image the number of times requested
+        // Calling blur code 3 times is less than efficient than having a
+        // BlurWorker take in an input that controls the "level" of blur
+        // But it showcases the flexibility of WorkManager chaining
+        for (i in 0 until blurLevel) {
+            val blurBuilder = OneTimeWorkRequestBuilder<BlurWorker>()
+            // Input the Uri if this is the first blur operation
+            // After the first blur operation the input will be the output of previous
+            // blur operations.
+            if (i == 0) {
+                blurBuilder.setInputData(createInputDataForUri())
+            }
+            continuation = continuation.then(blurBuilder.build())
+        }
 
         // Add WorkRequest to save the image to the filesystem
-        val save = OneTimeWorkRequest.Builder(SaveImageToFileWorker::class.java).build()
+        val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>().build()
 
         continuation = continuation.then(save)
 
