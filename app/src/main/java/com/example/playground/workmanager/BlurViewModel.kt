@@ -3,10 +3,8 @@ package com.example.playground.workmanager
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
+import com.example.playground.workmanager.util.IMAGE_MANIPULATION_WORK_NAME
 import com.example.playground.workmanager.util.KEY_IMAGE_URI
 import com.example.playground.workmanager.workers.BlurWorker
 import com.example.playground.workmanager.workers.CleanUpWorker
@@ -26,8 +24,12 @@ class BlurViewModel (application: Application) : AndroidViewModel(application) {
      */
     internal fun applyBlur(blurLevel: Int) {
         // Add WorkRequest to clean up temporary images
+        // Unique work chain to only blur a single image
+        // at a time
         var continuation = workManager
-            .beginWith(
+            .beginUniqueWork(
+                IMAGE_MANIPULATION_WORK_NAME,
+                ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequest.from(CleanUpWorker::class.java)
             )
 
