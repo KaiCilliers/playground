@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.collection.arraySetOf
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ import timber.log.Timber
  * Commented out because it increases build time
  */
 // @HiltAndroidApp
-class App : Application() {
+class App : Application(), Configuration.Provider {
     private val applicationScope by lazy {
         CoroutineScope(Dispatchers.Default)
     }
@@ -25,6 +26,30 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         delayedInit()
+    }
+
+    /**
+     * The first time WorkManager's instance is called within
+     * the app, WorkManager initializes itself using the
+     * configuration returned by this function
+     *
+     * @return Configuration that only prints out log messages
+     * with an error level when app is not in debug build and
+     * at build level when it is
+     */
+    override fun getWorkManagerConfiguration(): Configuration {
+        return if (BuildConfig.DEBUG) {
+            Configuration.Builder()
+                .setMinimumLoggingLevel(android.util.Log.DEBUG)
+                // Most notably useful changes are as follows
+//                .setWorkerFactory()
+//                .setJobSchedulerJobIdRange()
+                .build()
+        } else {
+            Configuration.Builder()
+                .setMinimumLoggingLevel(android.util.Log.ERROR)
+                .build()
+        }
     }
 
     private fun delayedInit() {
