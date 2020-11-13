@@ -15,7 +15,7 @@ import com.example.playground.databinding.FragmentWorkManagerBlurBinding
 import com.example.playground.util.clickAction
 import com.example.playground.workmanager.BlurViewModel
 import com.example.playground.workmanager.util.KEY_IMAGE_URI
-import java.util.*
+import timber.log.Timber
 
 class BlurFragment : Fragment() {
 
@@ -55,6 +55,10 @@ class BlurFragment : Fragment() {
             }
         }
 
+        binding.btnCancel.clickAction {
+            viewModel.cancelWork()
+        }
+
         viewModel.outputWorkInfos.observe(requireActivity(), workInfosObserver())
 
         return binding.root
@@ -65,7 +69,7 @@ class BlurFragment : Fragment() {
             // Note that these next few lines grab a single WorkInfo if it exists
             // This code could be in a Transformation in the ViewModel; they are included here
             // so that the entire process of displaying a WorkInfo is in one location.
-
+            Timber.d("$listOfWorkInfo")
             // If there are no matching work info, do nothing
             if (listOfWorkInfo.isNullOrEmpty()) {
                 return@Observer
