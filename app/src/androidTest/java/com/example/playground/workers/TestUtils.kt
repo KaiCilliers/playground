@@ -42,15 +42,15 @@ fun copyFileFromTestToTargetCtx(testCtx: Context, targetCtx: Context, filename: 
 
 /**
  * Check if a file exists in the given context.
- * @param testCtx android test context
+ * @param targetCtx target context
  * @param uri for the file
  * @return true if file exist, false if the file does not exist of the Uri is not valid
  */
-fun uriFileExists(testCtx: Context, uri: String?): Boolean {
+fun uriFileExists(targetCtx: Context, uri: String?): Boolean {
     if (uri.isNullOrEmpty()) {
         return false
     }
-    val resolver = testCtx.contentResolver
+    val resolver = targetCtx.contentResolver
 
     // Create a bitmap
     try {
