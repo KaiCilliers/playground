@@ -52,7 +52,12 @@
             </intent-filter>
         </receiver>
 
-        <!-- Remove default WorkManager configuration -->
+        <!--
+            Remove default WorkManager configuration
+            Also allows you to initialize it it lazily (on-demand)
+            and then you don't have to let App#onCreate init WorkManager...I think
+            https://www.youtube.com/watch?v=Bz0z694SrEE&ab_channel=AndroidDevelopers
+        -->
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"

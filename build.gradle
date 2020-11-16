@@ -20,6 +20,8 @@ buildscript {
         pagingVersion = PAGING_VERSION
         jetpackComposeVersion = JETPACKCOMPOSE_VERSION
         recyclerViewVersion = RECYCLER_VERSION
+        androidXAnnotations = ANNOTATIONS_VERSION
+        cardVersion = CARD_VERSION
     }
     repositories {
         google()

@@ -8,4 +8,7 @@
     <color name="greyAlpha">#55999999</color>
     <color name="separatorBackground">#AAAAAA</color>
     <color name="separatorText">#FFFFFF</color>
+    <color name="colorGrey">#757575</color>
+    <drawable name="completedTaskBackground">#CCCCCC</drawable>
+    <drawable name="touchFeedback">#CFD8DC</drawable>
 </resources>

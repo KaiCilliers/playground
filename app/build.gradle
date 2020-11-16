@@ -21,6 +21,9 @@ android {
     }
 
     buildTypes {
+        customDebugType {
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -54,6 +57,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
 
+    // CardView
+    implementation "androidx.cardview:cardview:$cardVersion"
+    // Annotation
+    implementation "androidx.annotation:annotation:$androidXAnnotations"
+
     // Latest RecyclerView version
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
 
@@ -67,13 +75,10 @@ dependencies {
     // Proto DataStore
     implementation "androidx.datastore:datastore-core:$dataStoreVersion"
 
-    // Timber
-    implementation "com.jakewharton.timber:timber:$timberVersion"
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
-    implementation "androidx.legacy:legacy-support-v4:$legacySupport"
 
     // Lifecycles: ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
@@ -85,9 +90,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:$viewPagerVersion"
 
     // Room
-    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
-    kapt "androidx.room:room-compiler:$roomVersion"
 
     // Fragment Testing
     debugImplementation "androidx.fragment:fragment-testing:$fragmentVersion"

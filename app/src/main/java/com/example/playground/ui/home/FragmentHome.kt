@@ -103,6 +103,9 @@ class FragmentHome : Fragment() {
     private fun setupClicks() {
         binding.apply {
             actions.apply {
+                btnTodo.clickAction {
+                    Timber.d("Pressed TODO")
+                }
                 btnBlur.clickAction {
                     findNavController().navigate(
                         FragmentHomeDirections.actionFragmentHomeToSelectFragment()
