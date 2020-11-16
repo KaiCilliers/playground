@@ -54,7 +54,7 @@ class App : Application(), Configuration.Provider {
 
     private fun delayedInit() {
         applicationScope.launch {
-            Timber.plant(Timber.DebugTree())
+            if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
             createNotificationChannel()
         }
     }
