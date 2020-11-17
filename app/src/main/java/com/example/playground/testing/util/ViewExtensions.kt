@@ -11,7 +11,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.playground.R
 import com.example.playground.testing.ScrollChildSwipeRefreshLayout
-import com.example.playground.testing.TodoEvent
 import com.google.android.material.snackbar.Snackbar
 
 /**

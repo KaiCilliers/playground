@@ -1,4 +1,4 @@
-package com.example.playground.testing
+package com.example.playground.testing.util
 
 import androidx.lifecycle.Observer
 

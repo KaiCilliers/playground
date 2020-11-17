@@ -1,4 +1,4 @@
-package com.example.playground.testing
+package com.example.playground.testing.util
 
 /**
  * Wrapper class for data that is exposed via LiveData that represents an event
